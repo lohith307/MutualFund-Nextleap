@@ -526,6 +526,84 @@ The final README includes:
 
 ---
 
+## Phase 6 — Advanced Groww-Themed UI (`stitch_grow_rag_chat_ui`)
+
+**Goal:** Transform the user interface into an ultra-premium, Stitch-grade application styled with Groww's official design system (Emerald `#00D09C`, Obsidian dark surfaces, frosted glass cards, category filters, and live telemetry).
+
+### 6.1 — Design System Specifications (`stitch_grow_rag_chat_ui`)
+
+| Element | Specification | Visual Target |
+|---|---|---|
+| **Primary Brand** | `#00D09C` (Groww Emerald Green) | Buttons, active badges, accent glows, link highlights |
+| **Canvas Background** | `#0B0E14` (Deep obsidian dark) | Primary app background |
+| **Card Surface** | `#151B26` (Elevated panel surface) | Chat messages, scheme cards, filter containers |
+| **Border Subtle** | `rgba(255, 255, 255, 0.08)` | 1px refined boundaries with subtle glassmorphism |
+| **Text Primary** | `#FFFFFF` | Headers, user text, key metric values |
+| **Text Secondary** | `#94A3B8` | Explanations, labels, subtitles |
+| **Font Family** | `Plus Jakarta Sans`, sans-serif | Modern tech-forward typography |
+
+### 6.2 — Key UI Features & Components
+
+```mermaid
+flowchart TD
+    subgraph Header["Sticky Top Bar"]
+        Brand["Groww Logo + AI Pill"]
+        Status["● Groq LLM Active · 15 Schemes Ready"]
+        Banner["⚠️ Sticky Disclaimer: Facts-only. No investment advice."]
+    end
+
+    subgraph Filters["Interactive Category Chips"]
+        ChipAll["All (15)"]
+        ChipSC["Small Cap (3)"]
+        ChipMC["Mid Cap (3)"]
+        ChipLC["Large Cap (1)"]
+        ChipFC["Flexi Cap (3)"]
+        ChipIdx["Index / Debt (5)"]
+    end
+
+    subgraph QuickPrompts["1-Click Factual Queries"]
+        P1["📊 Nippon India Mid Cap TER"]
+        P2["🚪 Parag Parikh Exit Load"]
+        P3["👤 Quant Small Cap Manager"]
+    end
+
+    subgraph ChatFeed["Conversational Thread"]
+        UserMsg["User Bubble (Obsidian Blue)"]
+        AssistCard["Assistant Card (Groww Emerald Border + Source Citation + Footer)"]
+        RefusalCard["Refusal Card (Warning Border + AMFI Educational Guidance)"]
+    end
+
+    subgraph Sidebar["Scheme Directory Explorer"]
+        Search["Live Scheme Search"]
+        List["15 Collapsible Scheme Fact Cards"]
+    end
+
+    Header --> Filters
+    Filters --> QuickPrompts
+    QuickPrompts --> ChatFeed
+    Sidebar -.-> ChatFeed
+```
+
+### 6.3 — Dual Interface Architecture
+1. **Enhanced Streamlit Application (`src/ui/app.py`):**
+   - Styled with embedded CSS matching the Groww Stitch design system.
+   - Dynamic session state handling quick example queries, category filters, and full chat history.
+   - Fixed top banner ensuring permanent disclaimer visibility.
+2. **Standalone Web UI (`src/ui/index.html`):**
+   - Pure HTML5 / CSS3 / JavaScript single-page application.
+   - Direct integration with FastAPI backend (`POST /query`, `GET /health`, `GET /schemes`).
+   - Zero framework overhead, ultra-fast client-side responsiveness.
+
+### Phase 6 Acceptance Criteria
+- [x] `.streamlit/config.toml` configured with Groww emerald theme
+- [x] `src/ui/app.py` updated with Stitch-grade Groww design, category filter chips, and sticky banner
+- [x] `src/ui/index.html` created as high-fidelity standalone web frontend
+- [x] Interactive example buttons populate and trigger queries seamlessly
+- [x] Verified scheme citation links and timestamps rendered in custom badge cards
+- [x] Regulatory disclaimer visible at all times across both interfaces
+
+---
+
 ## Milestone Summary
 
 | Milestone | Deliverable | Est. Duration |
@@ -534,7 +612,8 @@ The final README includes:
 | ✅ **M2** — Corpus ready | 15–25 URLs curated, cleaned, indexed in vector store | Day 3–6 |
 | ✅ **M3** — Pipeline live | Classifier + Retriever + LLM + Formatter working end-to-end | Day 7–12 |
 | ✅ **M4** — UI live | Refusal handler + FastAPI + Streamlit UI complete | Day 13–16 |
-| ✅ **M5** — Shipped | Tests pass, compliance verified, docs complete | Day 17–20 |
+| ✅ **M5** — Shipped | 136 tests pass, compliance verified, docs complete | Day 17–20 |
+| 🚀 **M6** — Advanced UI | Stitch-grade Groww chat UI + standalone web app | Day 21–22 |
 
 ---
 

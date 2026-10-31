@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -98,6 +98,18 @@ class SchemeInfo(BaseModel):
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
+@app.get("/", response_class=FileResponse, tags=["UI"])
+def serve_ui():
+    """
+    Serve the Stitch-grade Groww RAG Chat web interface directly from FastAPI.
+    """
+    from pathlib import Path
+    ui_path = Path("src/ui/index.html")
+    if ui_path.exists():
+        return FileResponse(ui_path)
+    return HTMLResponse("<h1>Groww Mutual Fund FAQ Assistant</h1><p>Visit /docs for API documentation.</p>")
+
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 def health_check() -> HealthResponse:

@@ -115,3 +115,4 @@ class TestComplianceChecklist:
     def test_disclaimer_tagline_present(self):
         res = query_pipeline("Which fund should I buy?")
         assert "Facts-only. No investment advice." in res["answer"]
+

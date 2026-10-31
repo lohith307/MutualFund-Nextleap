@@ -22,7 +22,12 @@ client = TestClient(app)
 
 
 class TestHealthEndpoint:
-    """Tests for GET /health."""
+    """Tests for GET /health and root UI."""
+
+    def test_root_serves_html_ui(self):
+        response = client.get("/")
+        assert response.status_code == 200
+        assert "Groww MF Assistant" in response.text or "html" in response.headers.get("content-type", "")
 
     def test_health_check_returns_200(self):
         response = client.get("/health")
