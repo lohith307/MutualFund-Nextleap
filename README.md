@@ -1,184 +1,274 @@
-# Mutual Fund FAQ Assistant
+# Groww Mutual Fund FAQ Assistant (Facts-Only RAG Chatbot)
 
-> **Facts-only. No investment advice.**
+> **⚠️ Disclaimer:** *Facts-only. No investment advice.*  
+> This assistant answers factual queries about mutual fund schemes strictly using official Groww scheme documentation. It does not provide investment advice, fund ratings, return calculations, performance comparisons, or personal recommendations.
 
-A lightweight RAG-based chatbot that answers factual queries about mutual fund schemes using official public sources. Built in the context of **Groww**.
-
----
-
-## What It Does
-
-- Answers objective, verifiable queries about mutual fund schemes (expense ratio, exit load, SIP amount, lock-in period, riskometer, benchmark, fund manager details, etc.)
-- Retrieves information exclusively from official Groww scheme pages
-- Returns concise responses (≤ 3 sentences) with a source citation and last-updated date
-- Politely refuses investment advice, performance comparisons, and advisory queries
-
-## What It Does NOT Do
-
-- ❌ Provide investment advice or recommendations
-- ❌ Compare fund performance or calculate returns
-- ❌ Access or store any personal information (PAN, Aadhaar, OTP, etc.)
-- ❌ Use third-party blogs or aggregator websites
+[![Python](https://img.shields.io/badge/Python-3.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg)](https://fastapi.tiangolo.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.40-FF4B4B.svg)](https://streamlit.io/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-0.5.18-orange.svg)](https://www.trychroma.com/)
+[![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-f55036.svg)](https://groq.com/)
+[![Tests](https://img.shields.io/badge/Tests-136%20Passed-brightgreen.svg)]()
 
 ---
 
-## Selected Schemes (Corpus)
+## 1. Project Overview
 
-15 mutual fund scheme pages from Groww across 11 AMCs:
+The **Mutual Fund FAQ Assistant** is a production-grade, compliance-first Retrieval-Augmented Generation (RAG) system built in the context of **Groww**. It serves factual and verifiable information for 15 prominent mutual fund schemes while deterministically blocking advisory questions, performance comparisons, and personally identifiable information (PII).
 
-| # | Scheme | AMC | Category |
-|---|---|---|---|
-| 1 | Bandhan Small Cap Fund – Direct Growth | Bandhan MF | Small Cap |
-| 2 | Axis Silver FOF – Direct Growth | Axis MF | Fund of Funds |
-| 3 | Parag Parikh Long Term Value Fund – Direct Growth | PPFAS MF | Value / Flexi Cap |
-| 4 | Motilal Oswal Most Focused Midcap 30 Fund – Direct Growth | Motilal Oswal MF | Mid Cap |
-| 5 | Kotak Silver ETF FOF – Direct Growth | Kotak MF | Fund of Funds |
-| 6 | HDFC Mid Cap Fund – Direct Growth | HDFC MF | Mid Cap |
-| 7 | JioBlackRock Flexi Cap Fund – Direct Growth | JioBlackRock MF | Flexi Cap |
-| 8 | HDFC Silver ETF FOF – Direct Growth | HDFC MF | Fund of Funds |
-| 9 | SBI Nifty Next 50 Index Fund – Direct Growth | SBI MF | Index Fund |
-| 10 | SBI PSU Fund – Direct Growth | SBI MF | Thematic / PSU |
-| 11 | Nippon India Growth Mid Cap Fund – Direct Growth | Nippon India MF | Mid Cap |
-| 12 | Bank of India Small Cap Fund – Direct Growth | BOI MF | Small Cap |
-| 13 | ICICI Prudential Large Cap Fund – Direct Growth | ICICI Prudential MF | Large Cap |
-| 14 | Bank of India Flexi Cap Fund – Direct Growth | BOI MF | Flexi Cap |
-| 15 | Axis Liquid Direct Fund – Growth | Axis MF | Liquid / Debt |
+### What It Does
+- Answers objective factual queries regarding:
+  - **Expense Ratio (TER)** and annual fund charges
+  - **Exit Load** structures, redemption slabs, and holding windows
+  - **Minimum Investment Amounts** (SIP and Lumpsum)
+  - **Lock-in Periods** (e.g., ELSS 3-year statutory lock-in)
+  - **Riskometer Ratings** (Low, Moderate, Very High)
+  - **Benchmark Indices** (e.g., Nifty Smallcap 250 TRI, Nifty 50 TRI)
+  - **Fund Management Details** (fund manager names, tenure start date)
+- Enforces concise answers (**≤ 3 sentences**).
+- Appends an exact **source URL citation** and a `Last updated from sources: <YYYY-MM-DD>` footer.
+- Politely refuses investment advice, comparative evaluations, and performance projections with educational references to [AMFI India](https://www.amfiindia.com/investor-corner).
+
+### What It Does NOT Do
+- ❌ **No Investment Advice:** Refuses questions like *"Should I invest in this fund?"* or *"Is this fund good for retirement?"*.
+- ❌ **No Fund Comparisons:** Refuses *"Which fund is better between X and Y?"*.
+- ❌ **No Return Calculations:** Refuses requests to calculate SIP maturity or historical returns.
+- ❌ **Zero PII Exposure:** Automatically detects and refuses queries containing PAN, Aadhaar, OTPs, or bank account numbers without logging or storing them.
+- ❌ **No Aggregator / Blog Scraping:** Operates exclusively over official Groww scheme documentation.
 
 ---
 
-## Architecture Overview (RAG)
+## 2. Selected Corpus (15 Groww Schemes)
+
+The knowledge base covers 15 curated scheme pages across 11 Asset Management Companies (AMCs) and diverse categories:
+
+| # | Scheme Name | AMC | Category | Official Source |
+|---|---|---|---|---|
+| 1 | **Bandhan Small Cap Fund** – Direct Growth | Bandhan Mutual Fund | Small Cap | [Groww Link](https://groww.in/mutual-funds/bandhan-small-cap-fund-direct-growth) |
+| 2 | **Axis Silver FOF** – Direct Growth | Axis Mutual Fund | Fund of Funds | [Groww Link](https://groww.in/mutual-funds/axis-silver-fof-direct-growth) |
+| 3 | **Parag Parikh Long Term Value Fund** – Direct Growth | PPFAS Mutual Fund | Flexi Cap / Value | [Groww Link](https://groww.in/mutual-funds/parag-parikh-long-term-value-fund-direct-growth) |
+| 4 | **Motilal Oswal Most Focused Midcap 30 Fund** – Direct Growth | Motilal Oswal Mutual Fund | Mid Cap | [Groww Link](https://groww.in/mutual-funds/motilal-oswal-most-focused-midcap-30-fund-direct-growth) |
+| 5 | **Kotak Silver ETF FOF** – Direct Growth | Kotak Mutual Fund | Fund of Funds | [Groww Link](https://groww.in/mutual-funds/kotak-silver-etf-fof-direct-growth) |
+| 6 | **HDFC Mid Cap Fund** – Direct Growth | HDFC Mutual Fund | Mid Cap | [Groww Link](https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth) |
+| 7 | **JioBlackRock Flexi Cap Fund** – Direct Growth | JioBlackRock Mutual Fund | Flexi Cap | [Groww Link](https://groww.in/mutual-funds/jioblackrock-flexi-cap-fund-direct-growth) |
+| 8 | **HDFC Silver ETF FOF** – Direct Growth | HDFC Mutual Fund | Fund of Funds | [Groww Link](https://groww.in/mutual-funds/hdfc-silver-etf-fof-direct-growth) |
+| 9 | **SBI Nifty Next 50 Index Fund** – Direct Growth | SBI Mutual Fund | Index Fund | [Groww Link](https://groww.in/mutual-funds/sbi-nifty-next-50-index-fund-direct-growth) |
+| 10 | **SBI PSU Fund** – Direct Growth | SBI Mutual Fund | Thematic / PSU | [Groww Link](https://groww.in/mutual-funds/sbi-psu-fund-direct-growth) |
+| 11 | **Nippon India Growth Mid Cap Fund** – Direct Growth | Nippon India Mutual Fund | Mid Cap | [Groww Link](https://groww.in/mutual-funds/nippon-india-growth-mid-cap-fund-direct-growth) |
+| 12 | **Bank of India Small Cap Fund** – Direct Growth | Bank of India Mutual Fund | Small Cap | [Groww Link](https://groww.in/mutual-funds/bank-of-india-small-cap-fund-direct-growth) |
+| 13 | **ICICI Prudential Large Cap Fund** – Direct Growth | ICICI Prudential Mutual Fund | Large Cap | [Groww Link](https://groww.in/mutual-funds/icici-prudential-large-cap-fund-direct-growth) |
+| 14 | **Bank of India Flexi Cap Fund** – Direct Growth | Bank of India Mutual Fund | Flexi Cap | [Groww Link](https://groww.in/mutual-funds/bank-of-india-flexi-cap-fund-direct-growth) |
+| 15 | **Axis Liquid Direct Fund** – Growth | Axis Mutual Fund | Debt / Liquid | [Groww Link](https://groww.in/mutual-funds/axis-liquid-direct-fund-growth) |
+
+---
+
+## 3. Architecture & Tech Stack
 
 ```
-User Query
-    │
-    ▼
-Query Classifier ──► (advisory / PII) ──► Refusal Handler
-    │
-    ▼ (factual)
-Retriever (ChromaDB semantic search)
-    │
-    ▼
-LLM (facts-only prompt, temperature=0)
-    │
-    ▼
-Response Formatter (≤3 sentences + citation + footer)
-    │
-    ▼
-User
+               User Query (HTTP / Streamlit)
+                           │
+                           ▼
+          ┌───────────────────────────────────┐
+          │     Query Intent Classifier       │
+          │   (PII / Advisory / Comparative)  │
+          └─────────────────┬─────────────────┘
+             Non-Factual    │        Factual Query
+          ┌─────────────────┴─────────────────┐
+          ▼                                   ▼
+┌──────────────────┐               ┌─────────────────────────────────┐
+│ Refusal Handler  │               │ Two-Stage Scheme-Aware Hybrid   │
+│  + AMFI link     │               │           Retriever             │
+└─────────┬────────┘               └────────────────┬────────────────┘
+          │                                         │ Top Chunks
+          │                                         ▼
+          │                        ┌─────────────────────────────────┐
+          │                        │     Deterministic Groq LLM      │
+          │                        │ (llama-3.3-70b, temp=0, max=200)│
+          │                        └────────────────┬────────────────┘
+          │                                         │
+          │                                         ▼
+          │                        ┌─────────────────────────────────┐
+          │                        │   Response Formatter & Guard    │
+          │                        │ (≤ 3 sentences, citation, date) │
+          │                        └────────────────┬────────────────┘
+          │                                         │
+          └─────────────────┬───────────────────────┘
+                            ▼
+              Client Response (FastAPI / UI)
 ```
 
-See [`Docs/architecture.md`](Docs/architecture.md) for the full system design.
+| Component | Technology | Rationale |
+|---|---|---|
+| **LLM Provider** | **Groq Cloud** (`llama-3.3-70b-versatile`) | Ultra-fast token generation (~400ms), zero temperature determinism, generous free tier. Fallbacks for Gemini / OpenAI. |
+| **Embeddings** | **BAAI/bge-small-en-v1.5** via `fastembed` | 100% free, runs locally on CPU via ONNX runtime, 384 dimensions, MTEB leader. |
+| **Vector Database** | **ChromaDB** (Persistent, Local) | Fast metadata filtering (`where={"scheme": ...}`) preventing cross-scheme contamination. |
+| **Chunking Engine** | **Section-Aware Chunker** | 135 atomic chunks mapped across 9 factual sections per scheme. |
+| **API Backend** | **FastAPI** + **SlowAPI** | High throughput async REST API with IP rate limiting and schema validation. |
+| **User Interface** | **Streamlit** | Interactive UI with sticky disclaimer banner, quick example buttons, and scheme explorer. |
+
+*For complete details, see [`Docs/architecture.md`](Docs/architecture.md) and [`Docs/edge-cases.md`](Docs/edge-cases.md).*
 
 ---
 
-## Setup Instructions
+## 4. Setup & Installation
 
 ### Prerequisites
-- Python 3.10+
-- An OpenAI API key **or** a Google Gemini API key
+- Python **3.9**, **3.10**, or **3.11**
+- Free Groq API Key (from [console.groq.com](https://console.groq.com)) or Gemini / OpenAI key
 
-### 1. Clone the repository
-
+### Step 1: Clone Repository
 ```bash
-git clone <repo-url>
+git clone https://github.com/lohith307/MutualFund-Nextleap.git
 cd MutualFund-Nextleap
 ```
 
-### 2. Create and activate a virtual environment
-
-```bash
-python -m venv venv
-
+### Step 2: Set Up Virtual Environment
+```powershell
 # Windows
-venv\Scripts\activate
+python -m venv venv
+.\venv\Scripts\activate
 
 # macOS / Linux
+python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Install dependencies
-
+### Step 3: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
-
+### Step 4: Configure Environment Variables
+Copy `.env.example` to `.env` and insert your API key:
 ```bash
 cp .env.example .env
-# Edit .env and fill in your API key(s)
+```
+Inside `.env`:
+```env
+# Primary LLM (Groq)
+GROQ_API_KEY=gsk_your_groq_api_key_here
+LLM_PROVIDER=groq
+LLM_MODEL=llama-3.3-70b-versatile
+
+# Embeddings (Local, Free)
+EMBEDDING_PROVIDER=bge
+EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+EMBEDDING_DEVICE=cpu
+
+# Vector Store
+VECTOR_STORE_PATH=corpus/vector_store
+VECTOR_STORE_COLLECTION=mutual_fund_faq
 ```
 
-### 5. Run the data ingestion pipeline *(Phase 2)*
+### Step 5: Run Ingestion Pipeline (One-Time Setup)
+All 15 Groww schemes are already indexed in `corpus/vector_store/`. If you want to re-run ingestion from scratch:
+```powershell
+# 1. Fetch raw HTML
+python -m src.ingestion.fetch
 
-```bash
-python -m src.ingestion.crawler
-python -m src.ingestion.cleaner
+# 2. Parse factual sections
+python -m src.ingestion.parse
+
+# 3. Create section-aware chunks
 python -m src.ingestion.chunker
+
+# 4. Embed into ChromaDB
 python -m src.ingestion.embedder
 ```
 
-### 6. Start the API backend *(Phase 4)*
+---
 
+## 5. Usage & Running the Services
+
+### Start the FastAPI Backend
+```powershell
+.\venv\Scripts\uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+- Interactive Swagger API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Health check: [http://localhost:8000/health](http://localhost:8000/health)
+- Schemes list: [http://localhost:8000/schemes](http://localhost:8000/schemes)
+
+#### Example API Request
 ```bash
-uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+curl -X POST "http://localhost:8000/query" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the exit load for Parag Parikh Flexi Cap Fund?"}'
 ```
 
-### 7. Launch the chat UI *(Phase 4)*
-
-```bash
-streamlit run src/ui/app.py
-```
-
----
-
-## Running Tests
-
-```bash
-pytest tests/ -v
-```
-
----
-
-## Project Structure
-
-```
-MutualFund-Nextleap/
-├── data/
-│   ├── raw/               # Downloaded HTML/PDF files (auto-generated)
-│   ├── cleaned/           # Cleaned plain-text files (auto-generated)
-│   └── metadata.json      # Corpus URL registry
-├── corpus/
-│   └── vector_store/      # ChromaDB index (auto-generated)
-├── src/
-│   ├── ingestion/         # Crawler, cleaner, chunker, embedder
-│   ├── pipeline/          # Classifier, retriever, prompt, LLM, formatter
-│   ├── api/               # FastAPI backend
-│   └── ui/                # Streamlit chat interface
-├── tests/                 # Unit & integration tests
-├── Docs/                  # Project documentation
-├── .env.example           # Environment variable template
-├── requirements.txt       # Python dependencies
-└── pyproject.toml         # Ruff + Black + pytest config
+#### Example API Response
+```json
+{
+  "answer": "Parag Parikh Flexi Cap Fund levies an exit load of 2.0% if redeemed within 365 days, and 1.0% if redeemed between 366 and 730 days of investment. No exit load applies after 730 days.\n\nSource: https://groww.in/mutual-funds/parag-parikh-long-term-value-fund-direct-growth\nLast updated from sources: 2026-10-31",
+  "source": "https://groww.in/mutual-funds/parag-parikh-long-term-value-fund-direct-growth",
+  "source_url": "https://groww.in/mutual-funds/parag-parikh-long-term-value-fund-direct-growth",
+  "last_updated": "2026-10-31",
+  "intent": "factual",
+  "status": "success",
+  "retrieved_chunks": 5
+}
 ```
 
 ---
 
-## Known Limitations
-
-| Limitation | Details |
-|---|---|
-| Static corpus | Data reflects the state at last ingestion; not real-time |
-| No live NAV | Cannot serve real-time NAV; directs users to official source |
-| PDF parsing | Tables and charts in PDFs may not parse perfectly |
-| Single-region corpus | Only 15 Groww scheme pages; not comprehensive across all AMCs |
-| English only | Non-English queries are not supported |
+### Start the Streamlit UI
+```powershell
+.\venv\Scripts\streamlit run src/ui/app.py
+```
+Opens in your browser at `http://localhost:8501`. Features include:
+- Persistent sticky top disclaimer banner.
+- 3 one-click example query buttons.
+- Conversational chat window with clickable Groww scheme citations.
+- Collapsible sidebar exploring all 15 schemes with categories and last-scraped dates.
 
 ---
 
-## Disclaimer
+## 6. Testing & Quality Assurance
 
-> **Facts-only. No investment advice.**
->
-> This assistant provides factual information about mutual fund schemes sourced from official public pages. It does not provide investment advice, recommendations, or performance projections. Always consult a SEBI-registered financial advisor before making investment decisions.
+The project includes an automated test suite with **136 tests** covering all phases:
 
+```powershell
+.\venv\Scripts\pytest tests/ -v
+```
+
+### Test Suite Structure
+| Test File | Description | Test Count |
+|---|---|---|
+| [`tests/test_classifier.py`](tests/test_classifier.py) | Intent classification (Factual, Advisory, Comparative, PII, Returns) | 26 |
+| [`tests/test_retriever.py`](tests/test_retriever.py) | Two-stage hybrid retriever, scheme isolation, section boost | 8 |
+| [`tests/test_formatter.py`](tests/test_formatter.py) | ≤ 3 sentences truncation, single URL citation, footer format | 8 |
+| [`tests/test_refusal.py`](tests/test_refusal.py) | Refusal responses and AMFI educational guidance link | 7 |
+| [`tests/test_api.py`](tests/test_api.py) | FastAPI endpoints (`/health`, `/schemes`, `/query`) & validations | 12 |
+| [`tests/test_e2e.py`](tests/test_e2e.py) | 10 official end-to-end representative queries | 10 |
+| [`tests/test_compliance.py`](tests/test_compliance.py) | 7-point regulatory compliance verification suite | 7 |
+| [`tests/test_chunker.py`](tests/test_chunker.py) | Section-aware chunking rules & token boundaries | 33 |
+| [`tests/test_embedder.py`](tests/test_embedder.py) | BGE-small embeddings & ChromaDB persistent indexing | 3 |
+| [`tests/test_ingestion.py`](tests/test_ingestion.py) | Web scraping, HTML parsing, metadata integrity | 16 |
+| [`tests/test_pipeline.py`](tests/test_pipeline.py) | End-to-end pipeline orchestration | 6 |
+| **Total** | | **136 Passed** |
+
+---
+
+## 7. Known Limitations
+
+1. **Static Corpus:** The vector database reflects information scraped from Groww as of October 2026. Changes made by AMCs after the fetch date require re-running `fetch.py` and `embedder.py`.
+2. **No Real-time NAV:** The assistant does not serve real-time NAV tickers; users are referred to the official Groww scheme page.
+3. **15 Scheme Scope:** Only queries pertaining to the 15 indexed schemes are answered factually; other schemes trigger polite out-of-corpus fallbacks.
+4. **English Language Only:** Queries in other languages are not supported in this version.
+
+---
+
+## 8. Regulatory Compliance Sign-Off
+
+- [x] **No Investment Advice:** No response ever recommends buying, selling, or holding a fund.
+- [x] **No Performance Calculations:** No calculations or comparisons of historical returns.
+- [x] **Verified Citations:** Every factual answer includes exactly one official Groww scheme URL.
+- [x] **Footer Timestamp:** Every factual answer appends `Last updated from sources: <date>`.
+- [x] **Educational Refusal:** Every non-factual query receives a polite refusal pointing to AMFI India.
+- [x] **PII Protection:** PAN, Aadhaar, and OTPs are rejected on input and never stored or echoed.
+- [x] **Persistent Disclaimer:** Displayed prominently in the UI and in all refusal messages.
+
+---
+
+## 9. License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

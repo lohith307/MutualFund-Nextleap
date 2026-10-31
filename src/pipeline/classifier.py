@@ -100,11 +100,14 @@ PII_PATTERNS = [
 ADVISORY_PATTERNS = [
     r"\bshould i invest\b",
     r"\bshould i buy\b",
+    r"\bcan i invest\b",
     r"\bis it safe to invest\b",
     r"\bis it good to invest\b",
     r"\bis this a good fund\b",
     r"\bis (?:the )?fund manager .*good\b",
     r"\bis (?:the )?fund manager good\b",
+    r"\bis .* safe\b",
+    r"\bis .* a good\b",
     r"\bworth investing\b",
     r"\bworth buying\b",
     r"\bcan i get rich\b",
@@ -113,7 +116,9 @@ ADVISORY_PATTERNS = [
     r"\brecommend (?:a|some|me)?\b",
     r"\bwhat should i pick\b",
     r"\bwhich one should i choose\b",
-    r"\bif i invest .* how much\b",
+    r"\bif i invest\b",
+    r"\bcalculate (?:my )?returns?\b",
+    r"\bcalculate .* returns?\b",
 ]
 
 COMPARATIVE_PATTERNS = [

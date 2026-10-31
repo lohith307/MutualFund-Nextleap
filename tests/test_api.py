@@ -138,3 +138,4 @@ class TestQueryValidation:
     def test_oversized_query_rejected(self):
         response = client.post("/query", json={"question": "a" * 1001})
         assert response.status_code == 422
+

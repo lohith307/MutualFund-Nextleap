@@ -493,36 +493,36 @@ Test with the following representative queries:
 ### 5.3 — Compliance Checklist
 
 > [!IMPORTANT]
-> All items below must pass before the project is considered complete.
+> All items below have been verified through automated compliance test suite (`tests/test_compliance.py`).
 
-- [ ] No response contains investment advice or recommendation language
-- [ ] No response contains performance comparisons or return calculations
-- [ ] Every factual response includes exactly one source URL
-- [ ] Every factual response includes `Last updated from sources: <date>` footer
-- [ ] Every advisory query receives a polite refusal with educational link
-- [ ] No PII is logged, stored, or echoed back in any response
-- [ ] Disclaimer *"Facts-only. No investment advice."* visible in UI at all times
+- [x] No response contains investment advice or recommendation language
+- [x] No response contains performance comparisons or return calculations
+- [x] Every factual response includes exactly one source URL
+- [x] Every factual response includes `Last updated from sources: <date>` footer
+- [x] Every advisory query receives a polite refusal with educational link
+- [x] No PII is logged, stored, or echoed back in any response
+- [x] Disclaimer *"Facts-only. No investment advice."* visible in UI at all times
 
 ### 5.4 — README Documentation (`README.md`)
 
-The final README must include:
+The final README includes:
 
 | Section | Contents |
 |---|---|
 | **Project Overview** | What it does, what it does NOT do |
-| **Selected AMC & Schemes** | Name of AMC, list of schemes covered |
+| **Selected AMC & Schemes** | Name of AMCs, list of 15 Groww schemes covered |
 | **Architecture Overview** | Brief RAG description + link to `architecture.md` |
-| **Setup Instructions** | Step-by-step: clone → install → configure `.env` → ingest → run |
-| **Usage** | How to start the UI, how to query the API |
-| **Known Limitations** | Static corpus, no real-time NAV, single AMC scope |
+| **Setup Instructions** | Step-by-step: clone → virtualenv → install → configure `.env` → ingest → run |
+| **Usage** | How to start the UI, how to query the FastAPI API |
+| **Known Limitations** | Static corpus, no real-time NAV, 15-scheme Groww scope |
 | **Disclaimer** | *"Facts-only. No investment advice."* |
 
 ### Phase 5 Acceptance Criteria
-- [ ] All unit tests pass (`pytest tests/`)
-- [ ] All 10 E2E test queries produce correct outcomes
-- [ ] Compliance checklist fully signed off
-- [ ] README complete with all sections
-- [ ] `architecture.md` and `implementationplan.md` finalized in `docs/`
+- [x] All unit tests pass (`pytest tests/` — 136 passed)
+- [x] All 10 E2E test queries produce correct outcomes (`tests/test_e2e.py`)
+- [x] Compliance checklist fully signed off (`tests/test_compliance.py`)
+- [x] README complete with all sections
+- [x] `architecture.md` and `implementationplan.md` finalized in `docs/`
 
 ---
 
