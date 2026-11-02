@@ -1,0 +1,13 @@
+{
+  "status": "idle",
+  "schedule": "Daily at 10:00 IST",
+  "timezone": "Asia/Kolkata",
+  "cron_expression": "0 10 * * *",
+  "last_run_ist": "2026-11-02 11:15:12 IST",
+  "last_status": "success",
+  "next_run_ist": "2026-11-03 10:00:00 IST",
+  "last_duration_seconds": 23.57,
+  "chunks_indexed": 135,
+  "schemes_processed": 15,
+  "error": null
+}
