@@ -30,7 +30,7 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
-LLM_MODEL = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
+LLM_MODEL = os.getenv("LLM_MODEL", "qwen/qwen3.8-27b")
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.0"))
 LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "200"))
 REQUEST_TIMEOUT = 15  # seconds
@@ -44,26 +44,42 @@ class LLMError(Exception):
 # ── Groq Client ───────────────────────────────────────────────────────────────
 
 def _call_groq(system_prompt: str, user_prompt: str, api_key: str) -> str:
-    """Invoke Groq API (ultra-low latency, deterministic inference)."""
-    from groq import Groq
+    """Invoke Groq API with automatic model fallback."""
+    from groq import Groq, NotFoundError
 
     client = Groq(api_key=api_key, timeout=REQUEST_TIMEOUT)
 
-    response = client.chat.completions.create(
-        model=LLM_MODEL,
-        temperature=LLM_TEMPERATURE,
-        max_tokens=LLM_MAX_TOKENS,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-    )
+    # Candidate models in order of priority (resilient to deprecations)
+    candidate_models = [LLM_MODEL, "qwen/qwen3.8-27b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+    models_to_try = []
+    for m in candidate_models:
+        if m and m not in models_to_try:
+            models_to_try.append(m)
 
-    content = response.choices[0].message.content
-    if not content or not content.strip():
-        raise LLMError("Groq returned an empty response.")
+    last_exc = None
+    for model_name in models_to_try:
+        try:
+            response = client.chat.completions.create(
+                model=model_name,
+                temperature=LLM_TEMPERATURE,
+                max_tokens=LLM_MAX_TOKENS,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+            content = response.choices[0].message.content
+            if content and content.strip():
+                return content.strip()
+        except NotFoundError as nf:
+            logger.warning("Groq model '%s' not found, trying fallback: %s", model_name, nf)
+            last_exc = nf
+            continue
+        except Exception as exc:
+            last_exc = exc
+            raise
 
-    return content.strip()
+    raise LLMError(f"All Groq candidate models failed. Last error: {last_exc}")
 
 
 # ── Gemini Client ─────────────────────────────────────────────────────────────

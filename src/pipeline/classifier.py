@@ -51,7 +51,7 @@ KNOWN_SCHEMES: Dict[str, List[str]] = {
         "kotak silver etf fof", "kotak silver",
     ],
     "HDFC Mid Cap Fund – Direct Growth": [
-        "hdfc mid cap", "hdfc midcap", "hdfc mid",
+        "hdfc mid cap", "hdfc midcap", "hdfc mid", "hdfc mini",
     ],
     "JioBlackRock Flexi Cap Fund – Direct Growth": [
         "jioblackrock flexi cap", "jio blackrock flexi cap", "jioblackrock", "jio blackrock",
