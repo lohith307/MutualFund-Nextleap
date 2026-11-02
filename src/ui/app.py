@@ -44,11 +44,20 @@ for _candidate in _possible_roots:
         break
 
 import streamlit as st
+import streamlit.components.v1 as components
 from dotenv import load_dotenv
 
 from src.pipeline import query_pipeline
 
 load_dotenv()
+
+def safe_html(html_code: str):
+    """Render HTML safely without markdown code-block or whitespace bugs."""
+    clean = "\n".join(l.strip() for l in html_code.splitlines() if l.strip())
+    if hasattr(st, "html"):
+        st.html(clean)
+    else:
+        st.markdown(clean, unsafe_allow_html=True)
 
 # ── Streamlit Page Configuration ──────────────────────────────────────────────
 st.set_page_config(
@@ -697,11 +706,22 @@ def render_trajectory_svg(monthly_sip: float, cagr: float, years: int) -> str:
         {tick_elements}
     </svg>
     """
-    return svg
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {{ margin: 0; padding: 0; background: transparent; overflow: hidden; }}
+</style>
+</head>
+<body>
+  {svg}
+</body>
+</html>"""
 
 
 # ── Render Top Navigation Header ──────────────────────────────────────────────
-st.markdown(
+safe_html(
     """
     <div class="brand-nav-container">
         <div class="brand-logo-area">
@@ -723,12 +743,11 @@ st.markdown(
             </div>
         </div>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 # ── Live Markets Ticker Bar ────────────────────────────────────────────────────
-st.markdown(
+safe_html(
     """
     <div class="ticker-bar">
         <div class="ticker-items">
@@ -742,12 +761,11 @@ st.markdown(
             <span>FEED STATUS: <strong style="color:#00D09C;">OK</strong></span>
         </div>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 # ── FundPulse Copilot Engine Sub-Header ────────────────────────────────────────
-st.markdown(
+safe_html(
     f"""
     <div class="copilot-subbar">
         <div class="copilot-subbar-chips">
@@ -761,8 +779,7 @@ st.markdown(
             <span style="font-family:var(--font-mono); font-size:0.75rem; color:#94A3B8;">Active Session: <strong style="color:#00D09C;">#AGG-SIP-25K</strong> 🔲</span>
         </div>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 # ── Query Handling Logic ───────────────────────────────────────────────────────
@@ -823,7 +840,7 @@ with nav_tabs[0]:
     # ─────────────────────────────────────────────────────────────────────────
     with col_left:
         # Card 1: Advisory Copilot Badge
-        st.markdown(
+        safe_html(
             """
             <div class="fp-card fp-card-highlight">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
@@ -839,12 +856,11 @@ with nav_tabs[0]:
                     🛡️ <strong>SEBI Advisory:</strong> Real-time deterministic query mode. 5-10Y historical rolling CAGR. Strictly non-promotional, source-attributed.
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         # Card 2: Active Direct Schemes
-        st.markdown(
+        safe_html(
             """
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; margin-bottom:8px;">
                 <span style="font-size:0.82rem; font-weight:700; color:#FFF; display:flex; align-items:center; gap:6px;">
@@ -852,12 +868,11 @@ with nav_tabs[0]:
                 </span>
                 <span class="kpi-badge-green">3 Selected</span>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         # Scheme 1: Nippon Small Cap
-        st.markdown(
+        safe_html(
             """
             <div class="scheme-mini-card">
                 <div class="scheme-mini-header">
@@ -873,14 +888,13 @@ with nav_tabs[0]:
                     <span>Exp: 0.72%</span>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
         if st.button("⚡ Query Nippon Small Cap", key="btn_q_nippon", use_container_width=True):
             st.session_state.pending_query = "What is the expense ratio and exit load for Nippon India Growth Mid Cap Fund?"
 
         # Scheme 2: PPFAS Flexi Cap
-        st.markdown(
+        safe_html(
             """
             <div class="scheme-mini-card">
                 <div class="scheme-mini-header">
@@ -896,14 +910,13 @@ with nav_tabs[0]:
                     <span>Exp: 0.65%</span>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
         if st.button("⚡ Query PPFAS Flexi Cap", key="btn_q_ppfas", use_container_width=True):
             st.session_state.pending_query = "What is the exit load for Parag Parikh Flexi Cap Fund?"
 
         # Scheme 3: HDFC Mid-Cap Opp
-        st.markdown(
+        safe_html(
             """
             <div class="scheme-mini-card">
                 <div class="scheme-mini-header">
@@ -919,14 +932,13 @@ with nav_tabs[0]:
                     <span>Exp: 0.81%</span>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
         if st.button("⚡ Query HDFC Mid-Cap", key="btn_q_hdfc", use_container_width=True):
             st.session_state.pending_query = "Who is the fund manager of HDFC Mid Cap Fund?"
 
         # Scheme Search Selector (to inspect ANY of the 15 Groww mutual funds!)
-        st.markdown("<div style='margin-top:14px; font-size:0.78rem; font-weight:700; color:#94A3B8;'>🔍 Explore Any Scheme:</div>", unsafe_allow_html=True)
+        safe_html("<div style='margin-top:14px; font-size:0.78rem; font-weight:700; color:#94A3B8;'>🔍 Explore Any Scheme:</div>")
         scheme_names = [s["scheme_name"] for s in all_schemes]
         selected_scheme = st.selectbox(
             "Select scheme to inspect:",
@@ -937,20 +949,19 @@ with nav_tabs[0]:
         if selected_scheme and selected_scheme != "(Select a fund...)":
             match = next((s for s in all_schemes if s["scheme_name"] == selected_scheme), None)
             if match:
-                st.markdown(
+                safe_html(
                     f"""
                     <div style="background:#0B101A; border:1px solid rgba(0, 208, 156, 0.3); border-radius:8px; padding:10px; margin-top:8px; font-size:0.75rem;">
                         <strong style="color:#00D09C;">{match['scheme_name']}</strong><br/>
                         <span style="color:#94A3B8;">TER: <strong>{match['expense_ratio']}</strong> · Manager: <strong>{match['fund_manager']}</strong></span>
                     </div>
-                    """,
-                    unsafe_allow_html=True,
+                    """
                 )
                 if st.button(f"⚡ Ask Facts for {match['scheme_name'][:20]}...", key=f"btn_ask_{match['slug']}", use_container_width=True):
                     st.session_state.pending_query = f"What is the expense ratio and exit load for {match['scheme_name']}?"
 
         # Presets & Tags
-        st.markdown(
+        safe_html(
             """
             <div style="margin-top:16px;">
                 <div style="font-size:0.72rem; font-weight:700; color:#64748B; text-transform:uppercase; margin-bottom:8px;">PRESETS & TAGS</div>
@@ -961,8 +972,7 @@ with nav_tabs[0]:
                     <span style="background:#0D121B; border:1px solid var(--card-border); color:#94A3B8; font-size:0.72rem; padding:3px 8px; border-radius:6px;">💰 Tax Saver</span>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -984,49 +994,43 @@ with nav_tabs[0]:
         gain_str = f"₹{wealth_gain/100000:.2f} L"
         corpus_str = f"₹{proj_corpus/100000:.2f} L"
 
-        st.markdown(
-            f"""
-            <div class="kpi-row">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span>MONTHLY SIP</span>
-                        <span style="color:#64748B;">[- / +]</span>
-                    </div>
-                    <div class="kpi-value">₹{st.session_state.monthly_sip:,.0f}</div>
-                    <div class="kpi-subtext">📅 Debit on 5th of Month</div>
+        safe_html(f"""
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span>MONTHLY SIP</span>
+                    <span style="color:#64748B;">[- / +]</span>
                 </div>
-
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span>TOTAL INVESTED</span>
-                    </div>
-                    <div class="kpi-value">{inv_str}</div>
-                    <div class="kpi-subtext">{st.session_state.horizon_years * 12} monthly installments</div>
-                </div>
-
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span>EST. WEALTH GAIN</span>
-                        <span class="kpi-badge-green">+{gain_pct:.1f}%</span>
-                    </div>
-                    <div class="kpi-value" style="color:#00D09C;">{gain_str}</div>
-                    <div class="kpi-subtext">Alpha: +4.8% vs Nifty</div>
-                </div>
-
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span>PROJECTED CORPUS</span>
-                    </div>
-                    <div class="kpi-value" style="color:#00D09C;">{corpus_str}</div>
-                    <div class="kpi-subtext">🎯 {st.session_state.horizon_years}Y Horizon Target</div>
-                </div>
+                <div class="kpi-value">₹{st.session_state.monthly_sip:,.0f}</div>
+                <div class="kpi-subtext">📅 Debit on 5th of Month</div>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span>TOTAL INVESTED</span>
+                </div>
+                <div class="kpi-value">{inv_str}</div>
+                <div class="kpi-subtext">{st.session_state.horizon_years * 12} monthly installments</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span>EST. WEALTH GAIN</span>
+                    <span class="kpi-badge-green">+{gain_pct:.1f}%</span>
+                </div>
+                <div class="kpi-value" style="color:#00D09C;">{gain_str}</div>
+                <div class="kpi-subtext">Alpha: +4.8% vs Nifty</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span>PROJECTED CORPUS</span>
+                </div>
+                <div class="kpi-value" style="color:#00D09C;">{corpus_str}</div>
+                <div class="kpi-subtext">🎯 {st.session_state.horizon_years}Y Horizon Target</div>
+            </div>
+        </div>
+        """)
 
         # Row 2: Advisory Copilot Query Center Card
-        st.markdown(
+        safe_html(
             f"""
             <div class="fp-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -1037,7 +1041,6 @@ with nav_tabs[0]:
                     </div>
                     <span style="font-size:0.75rem; color:#00D09C; font-family:var(--font-mono);">⚡ Auto-Synced {st.session_state.horizon_years}Y Trajectory</span>
                 </div>
-
                 <div class="strategy-summary-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                         <strong style="color:#00D09C;">✨ Current Strategy: High-Yield SIP Portfolio (₹{st.session_state.monthly_sip:,.0f}/mo)</strong>
@@ -1049,8 +1052,7 @@ with nav_tabs[0]:
                         and <strong>25% HDFC Mid-Cap</strong>. Blended expense ratio: <strong>0.718%</strong> (saves ~1.1% vs regular plans).
                     </div>
                 </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         # 1-Click Quick Action Chips
@@ -1091,15 +1093,15 @@ with nav_tabs[0]:
 
         # Conversational Chat Thread (renders messages if any)
         if st.session_state.messages:
-            st.markdown("<div style='margin-top:12px;'>", unsafe_allow_html=True)
+            safe_html("<div style='margin-top:12px;'>")
             for m in st.session_state.messages[-4:]:
                 if m["role"] == "user":
-                    st.markdown(f"<div class='copilot-msg-user'>👤 <strong>You:</strong> {m['content']}</div>", unsafe_allow_html=True)
+                    safe_html(f"<div class='copilot-msg-user'>👤 <strong>You:</strong> {m['content']}</div>")
                 else:
                     ans_text = m['content']
                     source_url = m.get('source_url', 'https://groww.in/mutual-funds')
                     last_up = m.get('last_updated', '2026-10-31')
-                    st.markdown(
+                    safe_html(
                         f"""
                         <div class='copilot-msg-assistant'>
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
@@ -1113,15 +1115,14 @@ with nav_tabs[0]:
                                 </a>
                             </div>
                         </div>
-                        """,
-                        unsafe_allow_html=True,
+                        """
                     )
-            st.markdown("</div>", unsafe_allow_html=True)
+            safe_html("</div>")
 
-        st.markdown("</div>", unsafe_allow_html=True)  # Close fp-card
+        safe_html("</div>")  # Close fp-card
 
         # Row 3: Compounded Wealth Trajectory Chart Card
-        st.markdown(
+        safe_html(
             f"""
             <div class="fp-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
@@ -1131,8 +1132,7 @@ with nav_tabs[0]:
                         <div style="font-size:0.74rem; color:#64748B; margin-top:2px;">SIP Monthly Capital Accumulation vs Exponential Compounding</div>
                     </div>
                 </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         # Timeframe Selector & Floating Snapshot
@@ -1146,27 +1146,26 @@ with nav_tabs[0]:
                     st.rerun()
 
         with hz_cols[5]:
-            st.markdown(
+            safe_html(
                 f"""
                 <div class="snapshot-badge">
                     <span>{st.session_state.horizon_years}-YEAR HORIZON SNAPSHOT</span> &bull; 
                     <span>Invested: <strong>{inv_str}</strong></span> &bull; 
                     <span style="color:#00D09C;">Gains: <strong>+{gain_str}</strong></span>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
-        # Render the SVG Line / Area Graph
+        # Render the SVG Line / Area Graph via isolated components.html to prevent React/DOMPurify exceptions
         chart_svg = render_trajectory_svg(
             st.session_state.monthly_sip,
             st.session_state.cagr_rate,
             st.session_state.horizon_years,
         )
-        st.markdown(chart_svg, unsafe_allow_html=True)
+        components.html(chart_svg, height=235, scrolling=False)
 
         # Legend and Scenario Note
-        st.markdown(
+        safe_html(
             f"""
             <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.74rem; font-family:var(--font-mono); margin-top:8px;">
                 <div style="display:flex; gap:16px;">
@@ -1178,8 +1177,7 @@ with nav_tabs[0]:
                 </div>
             </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         # Row 4: Two-Card Split (Model Assumptions & Portfolio Split)
@@ -1187,46 +1185,46 @@ with nav_tabs[0]:
 
         # Bottom Left: Model Assumptions
         with bot_col1:
-            st.markdown(
+            safe_html(
                 """
                 <div class="fp-card" style="height:100%;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <strong style="font-size:0.92rem; color:#FFF;">🎛️ Model Assumptions</strong>
                         <span style="color:#64748B; font-size:0.75rem;">Interactive Sliders</span>
                     </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
-            # Risk Profile Buttons
-            st.markdown("<div style='font-size:0.72rem; color:#94A3B8; font-weight:700; text-transform:uppercase; margin-bottom:4px;'>RISK APPETITE PROFILE</div>", unsafe_allow_html=True)
-            r_c1, r_c2, r_c3 = st.columns(3)
-            with r_c1:
-                if st.button("Conservative", key="rp_cons", use_container_width=True):
-                    st.session_state.risk_profile = "Conservative"
+            # Risk Profile Selector (Zero column nesting to strictly comply with Streamlit layout engine)
+            safe_html("<div style='font-size:0.72rem; color:#94A3B8; font-weight:700; text-transform:uppercase; margin-bottom:6px;'>RISK APPETITE PROFILE</div>")
+            rp_options = ["Conservative", "Balanced", "Aggressive"]
+            rp_curr_idx = rp_options.index(st.session_state.risk_profile) if st.session_state.risk_profile in rp_options else 2
+            rp_choice = st.radio(
+                "RISK APPETITE PROFILE",
+                options=rp_options,
+                index=rp_curr_idx,
+                horizontal=True,
+                label_visibility="collapsed",
+                key="radio_risk_profile",
+            )
+            if rp_choice != st.session_state.risk_profile:
+                st.session_state.risk_profile = rp_choice
+                if rp_choice == "Conservative":
                     st.session_state.cagr_rate = 11.5
-                    st.rerun()
-            with r_c2:
-                if st.button("Balanced", key="rp_bal", use_container_width=True):
-                    st.session_state.risk_profile = "Balanced"
+                elif rp_choice == "Balanced":
                     st.session_state.cagr_rate = 13.5
-                    st.rerun()
-            with r_c3:
-                btn_label = "🟢 Aggressive" if st.session_state.risk_profile == "Aggressive" else "Aggressive"
-                if st.button(btn_label, key="rp_agg", use_container_width=True):
-                    st.session_state.risk_profile = "Aggressive"
+                else:
                     st.session_state.cagr_rate = 15.4
-                    st.rerun()
+                st.rerun()
 
             # Expected CAGR Slider
-            st.markdown(
+            safe_html(
                 f"""
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; margin-bottom:2px;">
                     <span style="font-size:0.72rem; color:#94A3B8; font-weight:700; text-transform:uppercase;">EXPECTED ANNUAL CAGR</span>
                     <strong style="color:#00D09C; font-family:var(--font-mono); font-size:1.0rem;">{st.session_state.cagr_rate:.1f}% p.a.</strong>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
             new_cagr = st.slider(
                 "CAGR",
@@ -1241,15 +1239,14 @@ with nav_tabs[0]:
                 st.session_state.cagr_rate = new_cagr
                 st.rerun()
 
-            st.markdown(
+            safe_html(
                 """
                 <div style="display:flex; justify-content:space-between; font-size:0.70rem; color:#64748B; font-family:var(--font-mono); margin-top:-8px; margin-bottom:12px;">
                     <span>8.0% (Debt/Hybrid)</span>
                     <span>15.0% (Eq Blend)</span>
                     <span>22.0% (Pure Smallcap)</span>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
             # Annual Step-Up Toggle
@@ -1264,7 +1261,7 @@ with nav_tabs[0]:
                 st.rerun()
 
             st.caption("↑ Boosts final corpus with automated annual escalation.")
-            st.markdown("</div>", unsafe_allow_html=True)
+            safe_html("</div>")
 
         # Bottom Right: Portfolio Split
         with bot_col2:
@@ -1273,7 +1270,7 @@ with nav_tabs[0]:
             alloc_flexi = sip_val * 0.40
             alloc_mid = sip_val * 0.25
 
-            st.markdown(
+            safe_html(
                 f"""
                 <div class="fp-card" style="height:100%;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
@@ -1314,8 +1311,7 @@ with nav_tabs[0]:
                         </div>
                         <div style="font-size:0.72rem; color:#64748B; font-family:var(--font-mono);">Beta 0.88 &bull; Sharpe 1.64 &bull; TER 0.81%</div>
                     </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
             # High Impact One-Click Execute CTA Button
@@ -1443,7 +1439,7 @@ if prompt := st.chat_input("Ask anything (e.g. 'What is the exit load of PPFAS F
 
 
 # ── Footer Disclaimers ─────────────────────────────────────────────────────────
-st.markdown(
+safe_html(
     """
     <div class="bottom-disclaimer-strip">
         🛡️ <strong>Verified Direct Plans Only (Zero Commission Loaded)</strong> &bull; AMFI Tier-1 Scheme Registry &bull; Historical NAV Base: Jan 2014 – Jan 2026
@@ -1457,6 +1453,5 @@ st.markdown(
             <a href="#privacy">Privacy Guard</a>
         </div>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
