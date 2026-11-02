@@ -20,8 +20,14 @@ from __future__ import annotations
 import json
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Ensure project root is in sys.path when running on Streamlit Cloud or subdirectories
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -224,7 +230,9 @@ st.markdown(
 # ── Scheme Metadata Loading ───────────────────────────────────────────────────
 @st.cache_data
 def load_all_schemes() -> List[Dict[str, str]]:
-    meta_path = Path("data/metadata.json")
+    meta_path = PROJECT_ROOT / "data" / "metadata.json"
+    if not meta_path.exists():
+        meta_path = Path("data/metadata.json")
     if not meta_path.exists():
         return []
     try:
