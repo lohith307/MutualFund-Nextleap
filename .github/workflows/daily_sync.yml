@@ -1,0 +1,58 @@
+name: Daily Mutual Fund Ingestion (10:00 AM IST)
+
+on:
+  schedule:
+    # 10:00 AM IST = 04:30 AM UTC (UTC+05:30)
+    - cron: '30 4 * * *'
+  workflow_dispatch: # Enable manual run from GitHub UI or CLI
+
+permissions:
+  contents: write
+
+jobs:
+  daily-sync:
+    name: Sync Mutual Fund Factsheets & Vector Store
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Inspect Pre-Run Scheduler Status
+        run: |
+          python -m src.scheduler --status
+
+      - name: Execute Daily Ingestion Pipeline
+        run: |
+          python -m src.scheduler --now
+
+      - name: Inspect Post-Run Scheduler Status
+        run: |
+          python -m src.scheduler --status
+
+      - name: Run Scheduler Verification Tests
+        run: |
+          pytest tests/test_scheduler.py -v --no-cov
+
+      - name: Commit & Push Updated Factsheets & Index
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ corpus/
+          if git diff --staged --quiet; then
+            echo "No data changes detected. Everything is up to date."
+          else
+            git commit -m "chore(data): automated daily sync at 10:00 AM IST [skip ci]"
+            git push
+          fi
