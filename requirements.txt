@@ -44,6 +44,7 @@ streamlit==1.40.1
 python-dotenv==1.0.1
 tenacity==9.0.0           # retry logic with exponential backoff
 httpx==0.27.2             # async HTTP client
+apscheduler==3.11.3       # recurring cron ingestion scheduler (10:00 AM IST)
 
 # ── Rate Limiting ─────────────────────────────────────────────
 slowapi==0.1.9

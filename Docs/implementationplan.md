@@ -604,6 +604,52 @@ flowchart TD
 
 ---
 
+## Phase 7 — Automated Daily Ingestion Scheduler (10:00 AM IST)
+
+### Goal
+Keep all 15 Groww mutual fund scheme factsheets, expense ratios, exit loads, and NAVs synchronized with zero manual human intervention by automating the daily ingestion pipeline at **10:00 AM IST** (`Asia/Kolkata`).
+
+### 7.1 — Architecture & Execution Chain
+The scheduler uses `APScheduler` with IANA timezone-aware cron triggers to execute the 4-step ingestion pipeline daily:
+
+```mermaid
+flowchart TD
+    Trigger["APScheduler Cron: 0 10 * * * (Asia/Kolkata)"] --> S1["1. fetch_all(force=False)<br/>Check & fetch scheme factsheets"]
+    S1 --> S2["2. parse_all()<br/>Extract clean facts & tables"]
+    S2 --> S3["3. chunk_all()<br/>Split into atomic chunks (135)"]
+    S3 --> S4["4. embed_all()<br/>Upsert vectors into ChromaDB"]
+    S4 --> Status["5. Update data/scheduler_status.json<br/>Persist duration, chunk counts, next fire time"]
+```
+
+### 7.2 — Technical Specifications
+1. **Cron Expression:** `0 10 * * *`
+2. **Timezone:** `Asia/Kolkata` (IST, UTC+05:30)
+3. **Execution Engine:** `APScheduler` (`BackgroundScheduler` for in-process threads, `BlockingScheduler` for standalone daemons)
+4. **State Persistence:** `data/scheduler_status.json` storing `status`, `last_run_ist`, `last_status`, `next_run_ist`, `last_duration_seconds`, `chunks_indexed`, and `schemes_processed`.
+
+### 7.3 — Interfaces & CLI
+- **CLI Commands:**
+  - `python -m src.scheduler --now`: Run ingestion pipeline immediately on demand.
+  - `python -m src.scheduler --daemon`: Start blocking cron daemon service.
+  - `python -m src.scheduler --status`: Inspect last and upcoming execution telemetry.
+- **REST API Endpoints:**
+  - `GET /scheduler/status`: Returns current scheduler operational status and next fire time.
+  - `POST /scheduler/trigger`: Triggers background ingestion run on demand.
+- **UI Integration:**
+  - Streamlit top telemetry bar displays `Daily Sync: 10:00 AM IST`.
+  - Standalone HTML web client displays real-time sync schedule badge.
+
+### Phase 7 Acceptance Criteria
+- [x] APScheduler 3.x installed and configured with `Asia/Kolkata` timezone.
+- [x] `src/scheduler.py` created supporting `--now`, `--daemon`, and `--status` modes.
+- [x] Idempotent sequential execution chain (`fetch` → `parse` → `chunk` → `embed`).
+- [x] State persistence in `data/scheduler_status.json` with next run calculation.
+- [x] FastAPI exposes `GET /scheduler/status` and `POST /scheduler/trigger`.
+- [x] Streamlit and HTML UI telemetry display `Daily Sync: 10:00 AM IST`.
+- [x] Comprehensive test suite in `tests/test_scheduler.py` passing with 100% assertions.
+
+---
+
 ## Milestone Summary
 
 | Milestone | Deliverable | Est. Duration |
@@ -613,7 +659,8 @@ flowchart TD
 | ✅ **M3** — Pipeline live | Classifier + Retriever + LLM + Formatter working end-to-end | Day 7–12 |
 | ✅ **M4** — UI live | Refusal handler + FastAPI + Streamlit UI complete | Day 13–16 |
 | ✅ **M5** — Shipped | 136 tests pass, compliance verified, docs complete | Day 17–20 |
-| 🚀 **M6** — Advanced UI | Stitch-grade Groww chat UI + standalone web app | Day 21–22 |
+| ✅ **M6** — Advanced UI | Stitch-grade Groww chat UI + standalone web app | Day 21–22 |
+| 🚀 **M7** — Automation | Daily 10:00 AM IST ingestion scheduler + API endpoints | Day 23–24 |
 
 ---
 

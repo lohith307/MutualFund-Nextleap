@@ -8,7 +8,8 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.40-FF4B4B.svg)](https://streamlit.io/)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-0.5.18-orange.svg)](https://www.trychroma.com/)
 [![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-f55036.svg)](https://groq.com/)
-[![Tests](https://img.shields.io/badge/Tests-136%20Passed-brightgreen.svg)]()
+[![Scheduler](https://img.shields.io/badge/Scheduler-10%3A00%20AM%20IST-00D09C.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-149%20Passed-brightgreen.svg)]()
 
 ---
 
@@ -220,14 +221,32 @@ Opens in your browser at `http://localhost:8501`. Features include:
 - Conversational chat window with clickable Groww scheme citations.
 - Collapsible sidebar exploring all 15 schemes with categories and last-scraped dates.
 
+### Run the Daily Ingestion Scheduler (Phase 7)
+The automated scheduler synchronizes scheme factsheets and the ChromaDB index daily at **10:00 AM IST** (`Asia/Kolkata`):
+
+```powershell
+# Check current schedule and last execution telemetry
+.\venv\Scripts\python -m src.scheduler --status
+
+# Trigger ingestion pipeline immediately
+.\venv\Scripts\python -m src.scheduler --now
+
+# Run scheduler as a continuous foreground daemon service
+.\venv\Scripts\python -m src.scheduler --daemon
+```
+
+FastAPI scheduler REST endpoints:
+- `GET /scheduler/status` — Returns schedule, next fire time (10:00 AM IST), and last execution statistics.
+- `POST /scheduler/trigger` — Triggers an asynchronous re-ingestion task in the background.
+
 ---
 
 ## 6. Testing & Quality Assurance
 
-The project includes an automated test suite with **136 tests** covering all phases:
+The project includes an automated test suite with **149 tests** covering all phases:
 
 ```powershell
-.\venv\Scripts\pytest tests/ -v
+.\venv\Scripts\pytest tests/ --no-cov -v
 ```
 
 ### Test Suite Structure
@@ -237,14 +256,15 @@ The project includes an automated test suite with **136 tests** covering all pha
 | [`tests/test_retriever.py`](tests/test_retriever.py) | Two-stage hybrid retriever, scheme isolation, section boost | 8 |
 | [`tests/test_formatter.py`](tests/test_formatter.py) | ≤ 3 sentences truncation, single URL citation, footer format | 8 |
 | [`tests/test_refusal.py`](tests/test_refusal.py) | Refusal responses and AMFI educational guidance link | 7 |
-| [`tests/test_api.py`](tests/test_api.py) | FastAPI endpoints (`/health`, `/schemes`, `/query`) & validations | 12 |
+| [`tests/test_api.py`](tests/test_api.py) | FastAPI endpoints (`/health`, `/schemes`, `/query`) & validations | 13 |
+| [`tests/test_scheduler.py`](tests/test_scheduler.py) | Daily 10:00 AM IST scheduler, triggers, persistence & API endpoints | 12 |
 | [`tests/test_e2e.py`](tests/test_e2e.py) | 10 official end-to-end representative queries | 10 |
 | [`tests/test_compliance.py`](tests/test_compliance.py) | 7-point regulatory compliance verification suite | 7 |
 | [`tests/test_chunker.py`](tests/test_chunker.py) | Section-aware chunking rules & token boundaries | 33 |
 | [`tests/test_embedder.py`](tests/test_embedder.py) | BGE-small embeddings & ChromaDB persistent indexing | 3 |
 | [`tests/test_ingestion.py`](tests/test_ingestion.py) | Web scraping, HTML parsing, metadata integrity | 16 |
 | [`tests/test_pipeline.py`](tests/test_pipeline.py) | End-to-end pipeline orchestration | 6 |
-| **Total** | | **136 Passed** |
+| **Total** | | **149 Passed** |
 
 ---
 

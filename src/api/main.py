@@ -18,7 +18,7 @@ import os
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
@@ -95,6 +95,25 @@ class SchemeInfo(BaseModel):
     category: str
     url: str
     last_updated: str
+
+
+class SchedulerStatusResponse(BaseModel):
+    status: str
+    schedule: str
+    timezone: str
+    cron_expression: str
+    last_run_ist: Optional[str] = None
+    last_status: str
+    next_run_ist: str
+    last_duration_seconds: float
+    chunks_indexed: int
+    schemes_processed: int
+    error: Optional[str] = None
+
+
+class SchedulerTriggerResponse(BaseModel):
+    status: str
+    message: str
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -233,3 +252,27 @@ def query_faq(request: Request, body: QueryRequest) -> QueryResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while processing your request. Please try again later.",
         )
+
+
+@app.get("/scheduler/status", response_model=SchedulerStatusResponse, tags=["Scheduler"])
+def scheduler_status() -> SchedulerStatusResponse:
+    """
+    Get the operational status and schedule of the daily 10:00 AM IST ingestion pipeline.
+    """
+    from src.scheduler import read_scheduler_status
+    data = read_scheduler_status()
+    return SchedulerStatusResponse(**data)
+
+
+@app.post("/scheduler/trigger", response_model=SchedulerTriggerResponse, tags=["Scheduler"])
+def scheduler_trigger(background_tasks: BackgroundTasks) -> SchedulerTriggerResponse:
+    """
+    Manually trigger the mutual fund ingestion and vector index sync pipeline immediately in the background.
+    """
+    from src.scheduler import run_daily_ingestion
+    background_tasks.add_task(run_daily_ingestion)
+    return SchedulerTriggerResponse(
+        status="triggered",
+        message="Daily ingestion pipeline triggered in background."
+    )
+

@@ -270,7 +270,8 @@ st.markdown(
             </div>
             <div>
                 <span>Indexed Schemes: <strong>15</strong></span> &bull; 
-                <span>Atomic Chunks: <strong>135</strong></span>
+                <span>Atomic Chunks: <strong>135</strong></span> &bull; 
+                <span>Daily Sync: <strong>10:00 AM IST</strong></span>
             </div>
         </div>
         <div class="disclaimer-banner">
