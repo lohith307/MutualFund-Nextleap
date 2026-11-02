@@ -118,13 +118,38 @@ def get_chroma_client() -> chromadb.PersistentClient:
 
 
 def get_or_create_collection(client: Optional[chromadb.PersistentClient] = None) -> Any:
-    """Get or create the target Chroma collection."""
+    """Get or create the target Chroma collection, auto-populating if empty on cloud host."""
     if client is None:
         client = get_chroma_client()
-    return client.get_or_create_collection(
+    collection = client.get_or_create_collection(
         name=COLLECTION_NAME,
         metadata={"hnsw:space": "cosine"},
     )
+
+    # Self-healing cold start: If collection has 0 chunks, populate automatically from data/chunks/
+    if collection.count() == 0 and CHUNKS_DIR.exists():
+        chunk_files = sorted(CHUNKS_DIR.glob("*.json"))
+        if chunk_files:
+            logger.info("Chroma collection '%s' is empty. Auto-indexing %d chunk files...", COLLECTION_NAME, len(chunk_files))
+            all_chunks = []
+            for f in chunk_files:
+                try:
+                    with open(f, encoding="utf-8") as fp:
+                        chunks = json.load(fp)
+                        if isinstance(chunks, list):
+                            all_chunks.extend(chunks)
+                except Exception as exc:
+                    logger.warning("Could not read chunk file %s: %s", f.name, exc)
+
+            if all_chunks:
+                try:
+                    embedding_fn = get_embedding_function()
+                    embed_and_upsert_chunks(all_chunks, collection=collection, embedding_fn=embedding_fn)
+                    logger.info("Self-healing: Auto-indexed %d chunks into ChromaDB.", len(all_chunks))
+                except Exception as exc:
+                    logger.error("Auto-indexing chunks failed: %s", exc)
+
+    return collection
 
 
 # ── Ingestion Logic ───────────────────────────────────────────────────────────

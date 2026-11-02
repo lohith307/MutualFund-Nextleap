@@ -22,9 +22,6 @@ ENV/
 *.env
 !.env.example
 
-# ── Vector store / corpus (auto-generated) ───────────────
-corpus/vector_store/
-
 # ── Raw & cleaned data (downloaded at runtime) ───────────
 data/raw/
 data/cleaned/
