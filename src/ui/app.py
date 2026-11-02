@@ -492,54 +492,97 @@ st.markdown(
     }
 
     /* Super-Sized High-Impact Search Dock */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        background: #0D111A !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 12px !important;
+        padding: 18px 20px !important;
+    }
     div[data-testid="stForm"] {
         border: none !important;
         padding: 0 !important;
+        margin: 0 !important;
         background: transparent !important;
     }
-    div[data-testid="stForm"] div[data-testid="stTextInput"] input {
-        height: 64px !important;
-        min-height: 64px !important;
-        font-size: 1.15rem !important;
-        font-weight: 500 !important;
-        padding: 16px 24px !important;
-        border-radius: 12px !important;
-        background: #080D17 !important;
-        border: 2px solid rgba(0, 208, 156, 0.45) !important;
-        box-shadow: 0 4px 24px rgba(0, 208, 156, 0.12), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
-        color: #FFFFFF !important;
-        letter-spacing: 0.2px !important;
-        transition: all 0.25s ease !important;
+    /* BaseWeb Input Container: clean 52px height, single 1.5px emerald border */
+    div[data-testid="stForm"] div[data-baseweb="input"] {
+        height: 52px !important;
+        min-height: 52px !important;
+        background-color: #080D17 !important;
+        border: 1.5px solid rgba(0, 208, 156, 0.5) !important;
+        border-radius: 10px !important;
+        padding: 0 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 2px 14px rgba(0, 208, 156, 0.08) !important;
+        transition: all 0.2s ease !important;
     }
-    div[data-testid="stForm"] div[data-testid="stTextInput"] input:focus {
+    div[data-testid="stForm"] div[data-baseweb="input"]:focus-within {
         border-color: #00D09C !important;
-        background: #0C1322 !important;
-        box-shadow: 0 0 30px rgba(0, 208, 156, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+        background-color: #0B1322 !important;
+        box-shadow: 0 0 24px rgba(0, 208, 156, 0.3) !important;
     }
-    div[data-testid="stForm"] div[data-testid="stTextInput"] input::placeholder {
-        color: #64748B !important;
+    div[data-testid="stForm"] div[data-baseweb="input"] > div {
+        background-color: transparent !important;
+        border: none !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    /* Inner input element: NO extra border, transparent background, vertically centered */
+    div[data-testid="stForm"] div[data-baseweb="input"] input {
+        height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        color: #FFFFFF !important;
         font-size: 1.05rem !important;
+        font-weight: 500 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: normal !important;
+    }
+    div[data-testid="stForm"] div[data-baseweb="input"] input::placeholder {
+        color: #64748B !important;
+        font-size: 0.96rem !important;
         font-weight: 400 !important;
     }
+    /* Form submit button: perfectly aligned 52px height, full emerald gradient, centered text */
+    div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] {
+        display: flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
     div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button {
-        height: 64px !important;
-        min-height: 64px !important;
-        font-size: 1.15rem !important;
-        font-weight: 800 !important;
-        border-radius: 12px !important;
+        height: 52px !important;
+        min-height: 52px !important;
+        border-radius: 10px !important;
         background: linear-gradient(135deg, #00D09C 0%, #059669 100%) !important;
-        color: #04080E !important;
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(0, 208, 156, 0.4) !important;
-        letter-spacing: 0.5px !important;
+        border: 1px solid #00D09C !important;
+        box-shadow: 0 4px 16px rgba(0, 208, 156, 0.35) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 20px !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
     }
     div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 28px rgba(0, 208, 156, 0.6) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 24px rgba(0, 208, 156, 0.55) !important;
         background: linear-gradient(135deg, #00F5B8 0%, #059669 100%) !important;
-        color: #000000 !important;
+    }
+    div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button p {
+        color: #04080E !important;
+        font-weight: 800 !important;
+        font-size: 1.05rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        white-space: nowrap !important;
+        letter-spacing: 0.3px !important;
     }
     </style>
     """,
@@ -1079,86 +1122,84 @@ with nav_tabs[0]:
         </div>
         """)
 
-        # Row 2: Search Center Card (Advisory Copilot replaced with Prominent, Super-Sized Search Hub)
-        safe_html(
-            f"""
-            <div class="fp-card fp-card-search" style="padding:22px 24px; margin-bottom:14px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        # Row 2: Search Center Card (Super-Sized High-Impact Search Hub)
+        with st.container(border=True):
+            safe_html(
+                """
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <span class="pulse-dot-green"></span>
-                        <strong style="font-size:1.08rem; color:#FFF; letter-spacing:0.2px;">Groww Mutual Fund Search & Query Hub</strong>
+                        <strong style="font-size:1.05rem; color:#FFF; letter-spacing:0.2px;">Groww Mutual Fund Search & Query Hub</strong>
                         <span class="kpi-badge-green" style="font-size:0.68rem;">Deterministic AMFI RAG · Facts Only</span>
                     </div>
                     <span style="font-size:0.75rem; color:#94A3B8; font-family:var(--font-mono);">⚡ 15 Direct Schemes Indexed</span>
                 </div>
-            """
-        )
+                """
+            )
 
-        # Super-Sized High-Impact Query Dock
-        with st.form("copilot_dock_form", clear_on_submit=True):
-            q_dock_col, btn_dock_col = st.columns([5.2, 1.3])
-            with q_dock_col:
-                dock_q = st.text_input(
-                    "Search mutual fund database",
-                    placeholder="Ask anything about expense ratios, exit loads, fund managers, min SIP (e.g. 'What is the exit load of PPFAS Flexi Cap?')...",
-                    label_visibility="collapsed",
-                    key="dock_query_input",
-                )
-            with btn_dock_col:
-                dock_submitted = st.form_submit_button("Query ➔", use_container_width=True)
-
-        if dock_submitted and dock_q.strip():
-            handle_query(dock_q.strip())
-            st.rerun()
-
-        # Quick Factual Query Chips
-        chip_col1, chip_col2, chip_col3, chip_col4 = st.columns(4)
-        with chip_col1:
-            if st.button("⚡ Nippon Growth TER", use_container_width=True):
-                st.session_state.pending_query = "What is the expense ratio of Nippon India Growth Mid Cap Fund?"
-                st.rerun()
-        with chip_col2:
-            if st.button("⚡ PPFAS Flexi Exit Load", use_container_width=True):
-                st.session_state.pending_query = "What is the exit load for Parag Parikh Flexi Cap Fund?"
-                st.rerun()
-        with chip_col3:
-            if st.button("⚡ Quant Fund Manager", use_container_width=True):
-                st.session_state.pending_query = "Who is the fund manager of Quant Small Cap Fund?"
-                st.rerun()
-        with chip_col4:
-            if st.button("⚡ HDFC Mid-Cap Min SIP", use_container_width=True):
-                st.session_state.pending_query = "What is the minimum SIP amount for HDFC Mid-Cap Opportunities Fund?"
-                st.rerun()
-
-        # Conversational Chat Thread (renders messages if any)
-        if st.session_state.messages:
-            safe_html("<div style='margin-top:12px;'>")
-            for m in st.session_state.messages[-4:]:
-                if m["role"] == "user":
-                    safe_html(f"<div class='copilot-msg-user'>👤 <strong>You:</strong> {m['content']}</div>")
-                else:
-                    ans_text = m['content']
-                    source_url = m.get('source_url', 'https://groww.in/mutual-funds')
-                    last_up = m.get('last_updated', '2026-10-31')
-                    safe_html(
-                        f"""
-                        <div class='copilot-msg-assistant'>
-                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                <span style="font-weight:700; color:#00D09C;">📈 Copilot Verified Answer:</span>
-                                <span style="font-size:0.72rem; color:#64748B;">{last_up}</span>
-                            </div>
-                            <div>{ans_text}</div>
-                            <div style="margin-top:8px;">
-                                <a href="{source_url}" target="_blank" class="citation-link">
-                                    🔗 Verified Groww Source ↗
-                                </a>
-                            </div>
-                        </div>
-                        """
+            # Super-Sized High-Impact Query Dock
+            with st.form("copilot_dock_form", clear_on_submit=True, border=False):
+                q_dock_col, btn_dock_col = st.columns([4.6, 1.4], gap="small")
+                with q_dock_col:
+                    dock_q = st.text_input(
+                        "Search mutual fund database",
+                        placeholder="Ask anything (e.g. 'What is the exit load of PPFAS Flexi Cap?')...",
+                        label_visibility="collapsed",
+                        key="dock_query_input",
                     )
-            safe_html("</div>")
+                with btn_dock_col:
+                    dock_submitted = st.form_submit_button("Query ➔", type="primary", use_container_width=True)
 
-        safe_html("</div>")  # Close fp-card
+            if dock_submitted and dock_q.strip():
+                handle_query(dock_q.strip())
+                st.rerun()
+
+            # Quick Factual Query Chips
+            chip_col1, chip_col2, chip_col3, chip_col4 = st.columns(4)
+            with chip_col1:
+                if st.button("⚡ Nippon Growth TER", use_container_width=True):
+                    st.session_state.pending_query = "What is the expense ratio of Nippon India Growth Mid Cap Fund?"
+                    st.rerun()
+            with chip_col2:
+                if st.button("⚡ PPFAS Flexi Exit Load", use_container_width=True):
+                    st.session_state.pending_query = "What is the exit load for Parag Parikh Flexi Cap Fund?"
+                    st.rerun()
+            with chip_col3:
+                if st.button("⚡ Quant Fund Manager", use_container_width=True):
+                    st.session_state.pending_query = "Who is the fund manager of Quant Small Cap Fund?"
+                    st.rerun()
+            with chip_col4:
+                if st.button("⚡ HDFC Mid-Cap Min SIP", use_container_width=True):
+                    st.session_state.pending_query = "What is the minimum SIP amount for HDFC Mid-Cap Opportunities Fund?"
+                    st.rerun()
+
+            # Conversational Chat Thread (renders messages if any)
+            if st.session_state.messages:
+                safe_html("<div style='margin-top:12px;'>")
+                for m in st.session_state.messages[-4:]:
+                    if m["role"] == "user":
+                        safe_html(f"<div class='copilot-msg-user'>👤 <strong>You:</strong> {m['content']}</div>")
+                    else:
+                        ans_text = m['content']
+                        source_url = m.get('source_url', 'https://groww.in/mutual-funds')
+                        last_up = m.get('last_updated', '2026-10-31')
+                        safe_html(
+                            f"""
+                            <div class='copilot-msg-assistant'>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                    <span style="font-weight:700; color:#00D09C;">📈 Verified Answer:</span>
+                                    <span style="font-size:0.72rem; color:#64748B;">{last_up}</span>
+                                </div>
+                                <div>{ans_text}</div>
+                                <div style="margin-top:8px;">
+                                    <a href="{source_url}" target="_blank" class="citation-link">
+                                        🔗 Verified Groww Source ↗
+                                    </a>
+                                </div>
+                            </div>
+                            """
+                        )
+                safe_html("</div>")
 
         # Row 3: Compounded Wealth Trajectory Chart Card
         safe_html(
