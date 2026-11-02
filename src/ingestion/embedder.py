@@ -126,8 +126,8 @@ def get_or_create_collection(client: Optional[chromadb.PersistentClient] = None)
         metadata={"hnsw:space": "cosine"},
     )
 
-    # Self-healing cold start: If collection has 0 chunks, populate automatically from data/chunks/
-    if collection.count() == 0 and CHUNKS_DIR.exists():
+    # Self-healing cold start: If collection has < 100 chunks, populate automatically from data/chunks/
+    if collection.count() < 100 and CHUNKS_DIR.exists():
         chunk_files = sorted(CHUNKS_DIR.glob("*.json"))
         if chunk_files:
             logger.info("Chroma collection '%s' is empty. Auto-indexing %d chunk files...", COLLECTION_NAME, len(chunk_files))

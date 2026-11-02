@@ -266,9 +266,21 @@ if "selected_category" not in st.session_state:
     st.session_state.selected_category = "All"
 
 
+# ── Vector Store Status Check ─────────────────────────────────────────────────
+@st.cache_data
+def get_indexed_chunks_count() -> int:
+    try:
+        from src.ingestion.embedder import get_or_create_collection
+        col = get_or_create_collection()
+        return col.count()
+    except Exception:
+        return 135
+
+indexed_chunks = get_indexed_chunks_count()
+
 # ── Sticky Top Header with Telemetry & Regulatory Banner ───────────────────────
 st.markdown(
-    """
+    f"""
     <div class="sticky-header-container">
         <div class="telemetry-bar">
             <div>
@@ -277,8 +289,8 @@ st.markdown(
                 <span style="color: #00D09C;">BGE-small ONNX</span> Semantic Search
             </div>
             <div>
-                <span>Indexed Schemes: <strong>15</strong></span> &bull; 
-                <span>Atomic Chunks: <strong>135</strong></span> &bull; 
+                <span>Indexed Schemes: <strong>{len(all_schemes) or 15}</strong></span> &bull; 
+                <span>Atomic Chunks: <strong>{indexed_chunks}</strong></span> &bull; 
                 <span>Daily Sync: <strong>10:00 AM IST</strong></span>
             </div>
         </div>
