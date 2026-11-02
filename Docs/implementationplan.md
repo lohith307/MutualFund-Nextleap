@@ -518,7 +518,7 @@ The final README includes:
 | **Disclaimer** | *"Facts-only. No investment advice."* |
 
 ### Phase 5 Acceptance Criteria
-- [x] All unit tests pass (`pytest tests/` — 136 passed)
+- [x] All unit tests pass (`pytest tests/` — 149 passed)
 - [x] All 10 E2E test queries produce correct outcomes (`tests/test_e2e.py`)
 - [x] Compliance checklist fully signed off (`tests/test_compliance.py`)
 - [x] README complete with all sections
@@ -650,17 +650,56 @@ flowchart TD
 
 ---
 
+## Phase 8 — Cloud Deployment, Self-Healing Index & Presentation 4-Tab UI
+
+**Goal:** Deliver a production-grade, 24/7 always-on deployment on Streamlit Community Cloud with a world-class 4-tab Groww fintech interface, interactive sidebar scheme explorer, self-healing vector store, and 100% factual accuracy across all 15 schemes.
+
+### 8.1 — Cloud Deployment & Resilience Architecture
+1. **Live Streamlit Community Cloud Instance:**
+   - Deployed at: `https://mutualfund-nextleap.streamlit.app`
+   - Discovered seamlessly via root `streamlit_app.py` entrypoint.
+   - Self-healing vector database initialization: If `collection.count() < 100` upon cold start, `src/ingestion/embedder.py` automatically embeds and indexes the 135 atomic chunks within seconds.
+2. **HNSWlib Bounds Protection:**
+   - Protected `collection.query` in `src/pipeline/retriever.py` against HNSWlib contiguous array errors by bounding target results (`min(fetch_k, 5)`) when filtering by scheme metadata.
+3. **Multi-Model Inference Fallback:**
+   - Configured Groq inference pipeline prioritizing active `qwen/qwen3.8-27b` with instant fallback to `llama-3.1-8b-instant` and `llama-3.3-70b-versatile`.
+4. **Automated 24/7 Keep-Alive & Daily Synchronization:**
+   - `.github/workflows/daily_sync.yml`: Automates daily factsheet ingestion at 10:00 AM IST.
+   - `.github/workflows/keep_alive.yml`: Eliminates cloud sleeping by pinging `/health` every 12 minutes.
+
+### 8.2 — Presentation 4-Tab Groww Fintech UI (`src/ui/app.py`)
+- **Top KPI Overview Cards:** 15 Curated Schemes, 135 Chunks, 10:00 AM IST Sync, 0% Advice Tolerance.
+- **Interactive Sidebar Scheme Navigator ("Search Name & Display"):**
+  - Searchable scheme dropdown (`st.selectbox`).
+  - Instant Factsheet Card showing Category, AMC, Expense Ratio (TER), Exit Load, and Fund Manager.
+  - 4 one-click inquiry buttons (`⚡ TER`, `🚪 Exit Load`, `👤 Manager`, `💰 Min SIP`).
+- **Tab 1: 💬 AI Chat Assistant:** Category chips (All, Small Cap, Mid Cap, Flexi Cap, Large Cap, Debt), dynamic 1-click prompt cards, and conversational feed with verified Groww citation links and crawl date footers.
+- **Tab 2: 🏢 Scheme Directory & Factsheets:** Filterable 15-fund factsheet grid with stats table and 3 direct query buttons per card.
+- **Tab 3: ⏰ Daily Ingestion Scheduler:** Real-time scheduler telemetry, architecture diagram, and manual trigger button.
+- **Tab 4: ⚖️ Regulatory Compliance:** SEBI/AMFI compliance guardrail breakdown and educational resources.
+
+### Phase 8 Acceptance Criteria
+- [x] Live app deployed and running on Streamlit Community Cloud.
+- [x] All 15 mutual fund scheme chunks enriched with verified Total Expense Ratio (TER) percentages.
+- [x] Interactive sidebar scheme explorer renders instant factsheets and triggers 1-click queries.
+- [x] 4 presentation-grade tabs implemented with Groww dark emerald styling.
+- [x] HNSWlib filtered query bounds protected against contiguous array exceptions.
+- [x] 149/149 test suites passing with 100% assertions.
+
+---
+
 ## Milestone Summary
 
-| Milestone | Deliverable | Est. Duration |
-|---|---|---|
-| ✅ **M1** — Setup complete | Repo scaffold, dependencies, folder structure | Day 1–2 |
-| ✅ **M2** — Corpus ready | 15–25 URLs curated, cleaned, indexed in vector store | Day 3–6 |
-| ✅ **M3** — Pipeline live | Classifier + Retriever + LLM + Formatter working end-to-end | Day 7–12 |
-| ✅ **M4** — UI live | Refusal handler + FastAPI + Streamlit UI complete | Day 13–16 |
-| ✅ **M5** — Shipped | 136 tests pass, compliance verified, docs complete | Day 17–20 |
-| ✅ **M6** — Advanced UI | Stitch-grade Groww chat UI + standalone web app | Day 21–22 |
-| 🚀 **M7** — Automation | Daily 10:00 AM IST ingestion scheduler + API endpoints | Day 23–24 |
+| Milestone | Deliverable | Est. Duration | Status |
+|---|---|---|---|
+| **M1** — Setup complete | Repo scaffold, dependencies, folder structure | Day 1–2 | ✅ Shipped |
+| **M2** — Corpus ready | 15 Groww URLs curated, cleaned, indexed (135 chunks) | Day 3–6 | ✅ Shipped |
+| **M3** — Pipeline live | Classifier + Retriever + LLM + Formatter working end-to-end | Day 7–12 | ✅ Shipped |
+| **M4** — UI & API live | Refusal handler + FastAPI + Streamlit UI complete | Day 13–16 | ✅ Shipped |
+| **M5** — Test Suite | 149 tests pass, compliance verified, docs complete | Day 17–20 | ✅ Shipped |
+| **M6** — Advanced UI | Stitch-grade Groww chat UI + standalone web app | Day 21–22 | ✅ Shipped |
+| **M7** — Automation | Daily 10:00 AM IST ingestion scheduler + API endpoints | Day 23–24 | ✅ Shipped |
+| **M8** — Cloud & 4-Tab UI | Streamlit Cloud deployment + 4-tab presentation UI + verified TERs | Day 25–26 | ✅ Shipped |
 
 ---
 

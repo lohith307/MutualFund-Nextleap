@@ -112,7 +112,7 @@ Render allows running the FastAPI backend with the embedded Stitch Web UI free o
    ```env
    GROQ_API_KEY=gsk_your_groq_api_key_here
    LLM_PROVIDER=groq
-   LLM_MODEL=llama-3.3-70b-versatile
+   LLM_MODEL=qwen/qwen3.8-27b
    LOG_LEVEL=INFO
    VECTOR_STORE_PATH=corpus/vector_store
    VECTOR_STORE_COLLECTION=mutual_fund_faq
@@ -129,29 +129,30 @@ Render allows running the FastAPI backend with the embedded Stitch Web UI free o
 
 ---
 
-### Phase 2: Deploy Streamlit App on Streamlit Community Cloud (Alternative)
+### Phase 2: Live Streamlit Deployment on Streamlit Community Cloud
 
-If you wish to host the dedicated Streamlit interface on a custom `.streamlit.app` subdomain:
+The presentation-grade 4-tab Streamlit fintech application is deployed and live at:
+**[`https://mutualfund-nextleap.streamlit.app`](https://mutualfund-nextleap.streamlit.app)**
 
-1. **Sign in to Streamlit Community Cloud:**
+1. **Streamlit Community Cloud Setup:**
    - Go to [share.streamlit.io](https://share.streamlit.io) and log in with GitHub.
-
-2. **Deploy App:**
    - Click **Create app**.
    - **Repository:** `lohith307/MutualFund-Nextleap`
    - **Branch:** `master`
-   - **Main file path:** `src/ui/app.py`
-   - **App URL:** (e.g. `groww-mf-assistant.streamlit.app`)
+   - **Main file path:** `streamlit_app.py` (or `src/ui/app.py`)
+   - **App URL:** `mutualfund-nextleap.streamlit.app`
 
-3. **Configure Secrets:**
-   Under **Advanced settings** > **Secrets**, paste:
+2. **Configure Cloud Secrets:**
+   Under **App Settings** > **Secrets**, configure:
    ```toml
    GROQ_API_KEY = "gsk_your_groq_api_key_here"
    LLM_PROVIDER = "groq"
-   LLM_MODEL = "llama-3.3-70b-versatile"
+   LLM_MODEL = "qwen/qwen3.8-27b"
    ```
 
-4. Click **Deploy!**.
+3. **Automatic Deployment & Self-Healing:**
+   - Every push to `origin/master` automatically triggers a zero-downtime rolling update.
+   - If vector store embeddings need self-healing, `src/ingestion/embedder.py` auto-initializes the 135 chunks on first boot with 0 manual intervention required.
 
 ---
 

@@ -138,15 +138,44 @@ Facts-only. No investment advice.
 
 ### 4. User Interface Layer
 
-A minimal, clean chat interface exposing only the essential elements:
+A presentation-grade, compliance-first interface styled with **Groww's modern design system** (`#00D09C` emerald accents, `#080B10` obsidian dark surfaces, elevated slate cards, and Plus Jakarta Sans typography):
+
+```mermaid
+flowchart TD
+    subgraph StickyHeader["Sticky Telemetry Bar"]
+        Pill["● Groww MF AI Engine · Deterministic Groq RAG · BGE-small"]
+        Stats["15 Schemes · 135 Chunks · Daily Sync: 10:00 AM IST"]
+        Banner["⚠️ Strict Regulatory Notice: Facts-only assistant. No investment advice."]
+    end
+
+    subgraph SidebarNav["Sidebar Scheme Navigator"]
+        SearchSelect["🔍 Search & Select from 15 Schemes"]
+        FactCard["Instant Scheme Factsheet Card\n(TER · Exit Load · Manager · Groww Link)"]
+        OneClickBtns["⚡ 4 Instant Inquiries: [TER] [Exit Load] [Manager] [Min SIP]"]
+        QuickSelect["Quick Select: Nippon Mid Cap · Parag Parikh · HDFC Mid Cap"]
+    end
+
+    subgraph Tabs["Four Dedicated Navigation Tabs"]
+        T1["💬 Tab 1: AI Chat Assistant\n• Top KPI Metric Cards (15 Schemes, 135 Chunks, 10:00 AM Sync, 0% Advice)\n• Category Filter Chips (All, Small Cap, Mid Cap, Flexi Cap, Large Cap, Debt)\n• Dynamic 1-Click Prompt Cards\n• Conversational Feed with Emerald Cards, Source Pills, and Date Badges"]
+        T2["🏢 Tab 2: Scheme Directory & Factsheets\n• Real-time Search by Name, AMC, Category, or Manager\n• 15 Rich Factsheet Cards with TER, Exit Load, Manager & Min SIP\n• 3 Direct Inquiry Action Buttons per Card"]
+        T3["⏰ Tab 3: Daily Ingestion Scheduler\n• Live Telemetry (10:00 AM IST Cron, Last Status, Duration, Vectors)\n• Pipeline Flow Diagram (Fetch → Parse → Chunk → Embed → Upsert)\n• 'Trigger Ingestion Pipeline Now' Manual Execution Button"]
+        T4["⚖️ Tab 4: Regulatory Compliance\n• SEBI Non-Advisory Guardrail Checklist\n• PII Scrubbing & Source Attribution Contract Rules\n• Educational Links to AMFI & SEBI"]
+    end
+
+    StickyHeader --> Tabs
+    SidebarNav -.->|1-Click Auto Query| T1
+```
 
 | Element | Description |
 |---|---|
-| **Welcome Message** | Brief introduction to the assistant and its scope |
-| **Example Questions** | 3 pre-filled clickable question prompts |
-| **Chat Window** | User input + assistant response display |
-| **Disclaimer Banner** | *"Facts-only. No investment advice."* — always visible |
-| **Source Footer** | Appended to every assistant response |
+| **Sticky Telemetry Header** | Real-time pulsating status indicator, live sync status, and persistent regulatory disclaimer |
+| **Top KPI Metric Cards** | 4-card overview grid: 15 Schemes, 135 Chunks, 10:00 AM IST Daily Sync, 0% Advice Tolerance |
+| **Sidebar Scheme Explorer** | Searchable scheme selector with live factsheet rendering and 4 instant 1-click inquiry chips |
+| **Category Filter Chips** | Interactive pills filtering sample prompts across Small Cap, Mid Cap, Flexi Cap, Large Cap, Index & Debt |
+| **Conversational Chat Thread** | Emerald-bordered answer cards, refusal/advisory alert cards, verified source link pills (`↗`), and crawl timestamps |
+| **Scheme Directory Tab** | Searchable multi-column grid of all 15 covered mutual funds with full metadata factsheets and action buttons |
+| **Ingestion Scheduler Tab** | Real-time countdown to next 10:00 AM IST run, pipeline architecture diagram, and manual trigger button |
+| **Regulatory Compliance Tab** | SEBI & AMFI non-advisory compliance breakdown and educational investor links |
 
 ---
 
@@ -155,44 +184,43 @@ A minimal, clean chat interface exposing only the essential elements:
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant UI as UI Layer
+    participant UI as UI Layer (Streamlit / Web)
     participant QC as Query Classifier
     participant RAG as RAG Pipeline
-    participant VS as Vector Store
-    participant LLM as LLM
+    participant VS as ChromaDB Vector Store
+    participant LLM as Groq LLM (Qwen / Llama)
     participant RF as Refusal Handler
 
-    U->>UI: Enters query
+    U->>UI: Enters query (or clicks 1-click chip)
     UI->>QC: Forward query
     alt Factual query
-        QC->>RAG: Pass query
-        RAG->>VS: Semantic search (Top-K chunks)
+        QC->>RAG: Pass factual query
+        RAG->>VS: Semantic search (Top-K chunks, scheme-scoped)
         VS-->>RAG: Return relevant chunks + metadata
-        RAG->>LLM: Prompt with context + query
-        LLM-->>RAG: Draft response
-        RAG-->>UI: Formatted response (≤3 sentences + citation + footer)
-    else Advisory / non-factual
-        QC->>RF: Route to refusal
-        RF-->>UI: Polite refusal + educational link
+        RAG->>LLM: Prompt with context + query (temp=0.0)
+        LLM-->>RAG: Draft factual response
+        RAG-->>UI: Formatted response (≤3 sentences + citation + date footer)
+    else Advisory / non-factual / PII
+        QC->>RF: Route to refusal handler
+        RF-->>UI: Polite refusal + AMFI educational guidance link
     end
-    UI-->>U: Display response
+    UI-->>U: Display response card
 ```
 
 ---
 
 ## Corpus Sources
 
-| Source Type | Examples | Format |
+| Source Type | Details | Format |
 |---|---|---|
-| AMC Factsheets | Monthly scheme factsheets | PDF / HTML |
-| KIM | Key Information Memorandum | PDF |
-| SID | Scheme Information Document | PDF |
-| AMC FAQ Pages | Help & support pages | HTML |
-| AMFI Resources | Investor education pages | HTML |
-| SEBI Guidelines | Regulatory circulars | PDF / HTML |
+| Groww Scheme Factsheets | 15 curated scheme pages across 11 AMCs | HTML / Clean Text |
+| KIM & SID Disclosures | Key Information Memorandums and Scheme Information Documents | HTML / PDF |
+| AMC FAQ Pages | Official fee, tax, and exit load guidelines | HTML |
+| AMFI Resources | Investor education portal (`amfiindia.com/investor-corner`) | HTML Link |
+| SEBI Guidelines | SEBI (Investment Advisers) Regulations, 2013 | Policy Reference |
 
 > [!NOTE]
-> **15–25 URLs** will be curated from a single AMC (e.g., SBI MF, Mirae Asset, HDFC MF) plus AMFI and SEBI public pages. No third-party or aggregator sources are permitted.
+> **15 curated Groww scheme URLs** across 11 AMCs (SBI, HDFC, Axis, Bandhan, Bank of India, Motilal Oswal, Kotak, Parag Parikh, Nippon India, ICICI Prudential, JioBlackRock) representing Small Cap, Mid Cap, Large Cap, Flexi Cap, Index, and Debt categories.
 
 ---
 
@@ -200,33 +228,33 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    A["Incoming Query"] --> B{"Contains PII?"}
-    B -->|Yes — PAN · Aadhaar · Account No.| C["🚫 Block & Refuse"]
-    B -->|No| D["Query Classifier"]
-    D --> E["Continue Pipeline"]
+    A["Incoming Query"] --> B{"Contains PII?\n(PAN · Aadhaar · OTP)"}
+    B -->|Yes| C["🚫 Deterministic Refusal\n(Never logged or sent to LLM)"]
+    B -->|No| D{"Contains Advisory Intent?\n(Should I buy · Best fund)"}
+    D -->|Yes| E["🏛️ Polite Non-Advisory Refusal\n(+ AMFI Educational Link)"]
+    D -->|No| F["⚡ Pass to RAG Pipeline"]
 ```
 
 > [!CAUTION]
-> The system must **never** collect, store, log, or process:
-> - PAN or Aadhaar numbers
-> - Bank / demat account numbers
-> - OTPs
-> - Email addresses or phone numbers
+> The system strictly enforces:
+> - Zero collection or retention of PAN, Aadhaar numbers, OTPs, or bank account details.
+> - Deterministic rejection of investment recommendations, return projections, or forward-looking promises.
+> - Rate limiting via SlowAPI (60 requests/minute per IP) on all REST endpoints.
 
 ---
 
-## Technology Stack (Recommended)
+## Technology Stack (Production)
 
-| Layer | Technology |
-|---|---|
-| **Frontend / UI** | Streamlit / Next.js (minimal chat UI) |
-| **Backend / API** | FastAPI / Python |
-| **Embedding** | `BAAI/bge-small-en-v1.5` (Free/Local ONNX) or `text-embedding-3-small` |
-| **Vector Store** | ChromaDB (local persistent, native metadata filtering & upsert) |
-| **LLM** | GPT-4o-mini / Gemini Flash / Claude Haiku |
-| **PDF Parsing** | `PyMuPDF` / `pdfplumber` |
-| **Web Scraping** | `requests` + `BeautifulSoup` / `scrapy` |
-| **Metadata Store** | SQLite / JSON flat file |
+| Layer | Production Technology | Rationale |
+|---|---|---|
+| **Frontend / Dashboard** | **Streamlit 1.40+** (Groww Design System) | Multi-tab presentation UI with scheme navigator, factsheets, scheduler telemetry, and prompt chips |
+| **Standalone Web Client** | **HTML5 / CSS3 / Vanilla JS** (`src/ui/index.html`) | Ultra-lightweight zero-overhead single page application served by FastAPI |
+| **Backend / API** | **FastAPI** + **SlowAPI** + **Uvicorn** | Async REST API (`/query`, `/health`, `/schemes`, `/scheduler/*`) with rate limiting and schema validation |
+| **LLM Inference** | **Groq Cloud** (`qwen/qwen3.8-27b`) | Sub-500ms deterministic inference (temp=0.0) with automatic multi-model fallback (`llama-3.1-8b`, `llama-3.3-70b`) |
+| **Embeddings** | **BAAI/bge-small-en-v1.5** via `fastembed` | 100% free, runs locally on CPU via ONNX runtime, 384 dimensions, MTEB leader |
+| **Vector Database** | **ChromaDB 0.5.18** (Local Persistent) | 135 atomic chunks with metadata filtering and HNSWlib bounds safety |
+| **Scheduler Engine** | **APScheduler** + **GitHub Actions** | Automated daily synchronization at 10:00 AM IST (`0 10 * * *` Asia/Kolkata) |
+| **Hosting & Deploy** | **Streamlit Community Cloud** (Live) + **Render** + **Docker** | Multi-target deployment with 24/7 keep-alive automation |
 
 ---
 

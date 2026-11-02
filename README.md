@@ -19,14 +19,12 @@ license: mit
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg)](https://fastapi.tiangolo.com/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.40-FF4B4B.svg)](https://streamlit.io/)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-0.5.18-orange.svg)](https://www.trychroma.com/)
-[![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-f55036.svg)](https://groq.com/)
+[![Groq](https://img.shields.io/badge/Groq-qwen--2.5--27b-f55036.svg)](https://groq.com/)
 [![Scheduler](https://img.shields.io/badge/Scheduler-10%3A00%20AM%20IST-00D09C.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-149%20Passed-brightgreen.svg)]()
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-yellow)](https://huggingface.co/new-space)
-
-[![Deploy on Hugging Face](https://huggingface.co/datasets/huggingface/badges/resolve/main/deploy-on-spaces-sm.svg)](https://huggingface.co/new-space)
+[![Live Demo](https://img.shields.io/badge/Live%20App-Streamlit%20Cloud-00D09C.svg)](https://mutualfund-nextleap.streamlit.app)
+[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mutualfund-nextleap.streamlit.app)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lohith307/MutualFund-Nextleap)
-[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=lohith307/MutualFund-Nextleap&branch=master&mainModule=src/ui/app.py)
 
 ---
 
@@ -117,12 +115,12 @@ The knowledge base covers 15 curated scheme pages across 11 Asset Management Com
 
 | Component | Technology | Rationale |
 |---|---|---|
-| **LLM Provider** | **Groq Cloud** (`llama-3.3-70b-versatile`) | Ultra-fast token generation (~400ms), zero temperature determinism, generous free tier. Fallbacks for Gemini / OpenAI. |
+| **LLM Provider** | **Groq Cloud** (`qwen/qwen3.8-27b`) | Sub-500ms deterministic inference (temp=0.0) with automatic multi-model fallback (`llama-3.1-8b`, `llama-3.3-70b`). |
 | **Embeddings** | **BAAI/bge-small-en-v1.5** via `fastembed` | 100% free, runs locally on CPU via ONNX runtime, 384 dimensions, MTEB leader. |
-| **Vector Database** | **ChromaDB** (Persistent, Local) | Fast metadata filtering (`where={"scheme": ...}`) preventing cross-scheme contamination. |
-| **Chunking Engine** | **Section-Aware Chunker** | 135 atomic chunks mapped across 9 factual sections per scheme. |
-| **API Backend** | **FastAPI** + **SlowAPI** | High throughput async REST API with IP rate limiting and schema validation. |
-| **User Interface** | **Streamlit** | Interactive UI with sticky disclaimer banner, quick example buttons, and scheme explorer. |
+| **Vector Database** | **ChromaDB 0.5.18** (Persistent, Local) | Fast metadata filtering with HNSWlib bounds protection preventing array errors. |
+| **Chunking Engine** | **Section-Aware Chunker** | 135 atomic chunks enriched with verified Total Expense Ratios (TER) across 9 factual sections. |
+| **API Backend** | **FastAPI** + **SlowAPI** | High-throughput async REST API with IP rate limiting and schema validation. |
+| **User Interface** | **Streamlit 1.40+** (Groww Fintech Theme) | 4 interactive tabs, top KPI metric grid, and interactive sidebar scheme explorer with instant factsheets & 1-click action chips. |
 
 *For complete details, see [`Docs/architecture.md`](Docs/architecture.md) and [`Docs/edge-cases.md`](Docs/edge-cases.md).*
 
@@ -166,7 +164,7 @@ Inside `.env`:
 # Primary LLM (Groq)
 GROQ_API_KEY=gsk_your_groq_api_key_here
 LLM_PROVIDER=groq
-LLM_MODEL=llama-3.3-70b-versatile
+LLM_MODEL=qwen/qwen3.8-27b
 
 # Embeddings (Local, Free)
 EMBEDDING_PROVIDER=bge
@@ -228,15 +226,18 @@ curl -X POST "http://localhost:8000/query" \
 
 ---
 
-### Start the Streamlit UI
+### Start the Presentation Streamlit UI
 ```powershell
 .\venv\Scripts\streamlit run src/ui/app.py
 ```
 Opens in your browser at `http://localhost:8501`. Features include:
-- Persistent sticky top disclaimer banner.
-- 3 one-click example query buttons.
-- Conversational chat window with clickable Groww scheme citations.
-- Collapsible sidebar exploring all 15 schemes with categories and last-scraped dates.
+- **Interactive Sidebar Scheme Navigator:** Search and select any mutual fund from the dropdown to reveal an instant factsheet card (TER, Exit Load, Manager, Min SIP) and 4 one-click query buttons (`⚡ TER`, `🚪 Exit Load`, `👤 Manager`, `💰 Min SIP`).
+- **Tab 1: 💬 AI Chat Assistant:** Top KPI metric cards, category filter chips (Small Cap, Mid Cap, Flexi Cap, Large Cap, Debt), dynamic 1-click prompt cards, and conversational message thread with verified citation pills (`↗`).
+- **Tab 2: 🏢 Scheme Directory & Factsheets:** Searchable 15-fund factsheet grid with stats table and 3 direct query buttons per card.
+- **Tab 3: ⏰ Daily Ingestion Scheduler:** Real-time scheduler countdown (10:00 AM IST daily), pipeline flow diagram, and 1-click manual sync execution button.
+- **Tab 4: ⚖️ Regulatory Compliance:** SEBI/AMFI compliance guardrail breakdown and educational investor links.
+
+---
 
 ### Run the Daily Ingestion Scheduler (Phase 7)
 The automated scheduler synchronizes scheme factsheets and the ChromaDB index daily at **10:00 AM IST** (`Asia/Kolkata`):
@@ -258,15 +259,18 @@ FastAPI scheduler REST endpoints:
 
 ---
 
-### Cloud Deployment & 24/7 Always-On (Zero Sleep)
-The project is containerized and configured for 1-click cloud deployment with automated keep-alive:
+### Cloud Deployment & Live Production URL
 
-1. **1-Click Render Deployment:** Connect repository to [Render](https://render.com) using `render.yaml` or Docker.
-2. **Docker / VPS:** Run with `docker compose up -d --build`.
-3. **Prevent Sleeping on Free Tier:**
-   - Add your live URL as repository variable `APP_URL` in GitHub repo settings.
-   - The `.github/workflows/keep_alive.yml` workflow automatically pings `/health` every 12 minutes to keep the instance awake 24/7 for free.
-   - For complete step-by-step instructions, see [`Docs/deployment.md`](Docs/deployment.md).
+The application is deployed live with zero cold-start delay:
+
+1. **Live Streamlit Community Cloud Dashboard:**
+   - **Production URL:** **[`https://mutualfund-nextleap.streamlit.app`](https://mutualfund-nextleap.streamlit.app)**
+   - Pre-indexed ChromaDB vector store with self-healing cold-start loading.
+2. **FastAPI + Standalone Web UI on Render:**
+   - Deployable via `render.yaml` or Docker Compose.
+3. **24/7 Always-On (Zero Sleep):**
+   - GitHub Actions workflow [`.github/workflows/keep_alive.yml`](.github/workflows/keep_alive.yml) pings `/health` every 12 minutes to keep free-tier instances awake 24/7.
+   - For complete step-by-step instructions, see [`Docs/deployment.md`](Docs/deployment.md) and [`Docs/deployment-plan.md`](Docs/deployment-plan.md).
 
 ---
 

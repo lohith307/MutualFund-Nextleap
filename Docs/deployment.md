@@ -35,14 +35,33 @@ In the Render dashboard under **Environment**:
 |---|---|---|
 | `GROQ_API_KEY` | `gsk_...` | Your Groq API key |
 | `LLM_PROVIDER` | `groq` | Model provider |
-| `LLM_MODEL` | `llama-3.3-70b-versatile` | LLM model |
+| `LLM_MODEL` | `qwen/qwen3.8-27b` | LLM model (with instant fallback) |
 
 Click **Deploy Web Service**. Render will build and deploy your app, giving you a public URL like:
 `https://groww-mf-assistant.onrender.com`
 
 ---
 
-## 3. Keep It Always Awake (Prevent Sleep Mode)
+## 3. Deploy on Streamlit Community Cloud (Live Production Dashboard)
+
+The dedicated 4-tab Streamlit fintech interface is deployed live on Streamlit Community Cloud:
+
+- **Live URL:** **[`https://mutualfund-nextleap.streamlit.app`](https://mutualfund-nextleap.streamlit.app)**
+- **GitHub Repository:** `lohith307/MutualFund-Nextleap`
+- **Branch:** `master`
+- **Main Entrypoint:** `streamlit_app.py` (or `src/ui/app.py`)
+
+### Configuring Streamlit Cloud Secrets:
+In the Streamlit Cloud dashboard under **App Settings** > **Secrets**:
+```toml
+GROQ_API_KEY = "gsk_your_groq_api_key_here"
+LLM_PROVIDER = "groq"
+LLM_MODEL = "qwen/qwen3.8-27b"
+```
+
+---
+
+## 4. Keep It Always Awake (Prevent Sleep Mode)
 
 Choose either of these two free methods to prevent Render from going to sleep:
 
@@ -67,7 +86,7 @@ Because traffic arrives every 5 to 12 minutes, Render will **never** enter sleep
 
 ---
 
-## 4. Deploying via Docker
+## 5. Deploying via Docker
 
 To run on any Linux VPS (AWS EC2, GCP Compute Engine, DigitalOcean, Hetzner, etc.):
 
