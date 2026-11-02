@@ -1,3 +1,15 @@
+---
+title: Groww Mutual Fund FAQ Assistant
+emoji: 📈
+colorFrom: green
+colorTo: emerald
+sdk: streamlit
+sdk_version: "1.40.1"
+app_file: src/ui/app.py
+pinned: false
+license: mit
+---
+
 # Groww Mutual Fund FAQ Assistant (Facts-Only RAG Chatbot)
 
 > **⚠️ Disclaimer:** *Facts-only. No investment advice.*  
@@ -10,7 +22,9 @@
 [![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-f55036.svg)](https://groq.com/)
 [![Scheduler](https://img.shields.io/badge/Scheduler-10%3A00%20AM%20IST-00D09C.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-149%20Passed-brightgreen.svg)]()
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-yellow)](https://huggingface.co/new-space)
 
+[![Deploy on Hugging Face](https://huggingface.co/datasets/huggingface/badges/resolve/main/deploy-on-spaces-sm.svg)](https://huggingface.co/new-space)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lohith307/MutualFund-Nextleap)
 [![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=lohith307/MutualFund-Nextleap&branch=master&mainModule=src/ui/app.py)
 

@@ -120,6 +120,19 @@ def _call_openai(system_prompt: str, user_prompt: str, api_key: str) -> str:
     return content.strip()
 
 
+def _get_api_key(key_name: str) -> Optional[str]:
+    """Retrieve API key from environment or Streamlit secrets if running in UI."""
+    val = os.getenv(key_name)
+    if not val:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and key_name in st.secrets:
+                val = st.secrets[key_name]
+        except Exception:
+            pass
+    return val
+
+
 # ── Core Generate Function ────────────────────────────────────────────────────
 
 @retry(
@@ -131,19 +144,19 @@ def _call_openai(system_prompt: str, user_prompt: str, api_key: str) -> str:
 def _generate_with_retry(system_prompt: str, user_prompt: str) -> str:
     """Execute LLM call with 3 retries on network/timeout errors."""
     if LLM_PROVIDER == "groq":
-        api_key = os.getenv("GROQ_API_KEY")
+        api_key = _get_api_key("GROQ_API_KEY")
         if not api_key or api_key.startswith("gsk_..."):
             raise ValueError("GROQ_API_KEY is not configured in .env.")
         return _call_groq(system_prompt, user_prompt, api_key)
 
     elif LLM_PROVIDER == "openai":
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key = _get_api_key("OPENAI_API_KEY")
         if not api_key or api_key.startswith("sk-..."):
             raise ValueError("OPENAI_API_KEY is not configured in .env.")
         return _call_openai(system_prompt, user_prompt, api_key)
 
     elif LLM_PROVIDER in ("gemini", "google"):
-        api_key = os.getenv("GOOGLE_API_KEY")
+        api_key = _get_api_key("GOOGLE_API_KEY")
         if not api_key or api_key.startswith("AIza..."):
             raise ValueError("GOOGLE_API_KEY is not configured in .env.")
         return _call_gemini(system_prompt, user_prompt, api_key)

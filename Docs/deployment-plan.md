@@ -253,3 +253,4 @@ For deployment on any Linux VM (AWS EC2, Google Cloud Compute Engine, DigitalOce
 | 6 | 24/7 Keep-alive workflow committed | ✅ Active on GitHub Actions |
 | 7 | `GROQ_API_KEY` configured in hosting provider | ⏳ Ready to add in Render / Streamlit Cloud |
 | 8 | `APP_URL` variable added in GitHub Settings | ⏳ Add after Render URL is generated |
+
