@@ -50,7 +50,7 @@ def _call_groq(system_prompt: str, user_prompt: str, api_key: str) -> str:
     client = Groq(api_key=api_key, timeout=REQUEST_TIMEOUT)
 
     # Candidate models in order of priority (resilient to deprecations)
-    candidate_models = [LLM_MODEL, "qwen/qwen3.8-27b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+    candidate_models = ["qwen/qwen3.8-27b", LLM_MODEL, "llama-3.1-8b-instant", "llama-3.3-70b-versatile"]
     models_to_try = []
     for m in candidate_models:
         if m and m not in models_to_try:

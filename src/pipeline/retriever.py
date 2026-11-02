@@ -135,15 +135,24 @@ def retrieve(
     # Apply scheme scope filter when target scheme is known
     where_filter = {"scheme": matched_scheme} if matched_scheme else None
 
-    # Fetch extra candidates if re-ranking
+    # Fetch extra candidates if re-ranking, capped to scheme chunk bounds
     fetch_k = top_k * 2 if matched_section else top_k
+    target_k = min(fetch_k, 5) if where_filter else min(fetch_k, collection.count() or 1)
 
-    query_res = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=min(fetch_k, collection.count() or 1),
-        where=where_filter,
-        include=["documents", "metadatas", "distances"],
-    )
+    try:
+        query_res = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=target_k,
+            where=where_filter,
+            include=["documents", "metadatas", "distances"],
+        )
+    except Exception as exc:
+        logger.warning("Filtered ChromaDB query failed (%s), querying without where clause", exc)
+        query_res = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=min(top_k, collection.count() or 1),
+            include=["documents", "metadatas", "distances"],
+        )
 
     docs = query_res.get("documents", [[]])[0]
     metas = query_res.get("metadatas", [[]])[0]
