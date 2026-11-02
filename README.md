@@ -11,6 +11,9 @@
 [![Scheduler](https://img.shields.io/badge/Scheduler-10%3A00%20AM%20IST-00D09C.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-149%20Passed-brightgreen.svg)]()
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lohith307/MutualFund-Nextleap)
+[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=lohith307/MutualFund-Nextleap&branch=master&mainModule=src/ui/app.py)
+
 ---
 
 ## 1. Project Overview
