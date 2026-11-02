@@ -1,0 +1,38 @@
+name: 24/7 Keep-Alive Pinger
+
+on:
+  schedule:
+    # Ping every 12 minutes to keep free-tier instances (e.g. Render) awake
+    - cron: '*/12 * * * *'
+  workflow_dispatch: # Enable manual test run
+
+jobs:
+  keep-alive:
+    name: Ping App Health Endpoint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Deployed Application
+        env:
+          APP_URL: ${{ secrets.APP_URL || vars.APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "ℹ️ APP_URL is not yet configured."
+            echo "Once deployed, add your app URL (e.g., https://groww-mf-assistant.onrender.com) to:"
+            echo "GitHub Repo -> Settings -> Secrets and variables -> Actions -> Variables -> New repository variable 'APP_URL'"
+            exit 0
+          fi
+
+          # Strip trailing slash if present
+          CLEAN_URL="${APP_URL%/}"
+          TARGET_URL="${CLEAN_URL}/health"
+
+          echo "Pinging ${TARGET_URL}..."
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$TARGET_URL")
+
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Keep-alive successful: HTTP 200 received from ${TARGET_URL}"
+          else
+            echo "⚠️ Health check returned HTTP status: ${HTTP_CODE}"
+            exit 1
+          fi

@@ -241,6 +241,18 @@ FastAPI scheduler REST endpoints:
 
 ---
 
+### Cloud Deployment & 24/7 Always-On (Zero Sleep)
+The project is containerized and configured for 1-click cloud deployment with automated keep-alive:
+
+1. **1-Click Render Deployment:** Connect repository to [Render](https://render.com) using `render.yaml` or Docker.
+2. **Docker / VPS:** Run with `docker compose up -d --build`.
+3. **Prevent Sleeping on Free Tier:**
+   - Add your live URL as repository variable `APP_URL` in GitHub repo settings.
+   - The `.github/workflows/keep_alive.yml` workflow automatically pings `/health` every 12 minutes to keep the instance awake 24/7 for free.
+   - For complete step-by-step instructions, see [`Docs/deployment.md`](Docs/deployment.md).
+
+---
+
 ## 6. Testing & Quality Assurance
 
 The project includes an automated test suite with **149 tests** covering all phases:

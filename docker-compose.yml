@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  groww-mf-assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: groww-mf-assistant
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - LLM_PROVIDER=groq
+      - LLM_MODEL=llama-3.3-70b-versatile
+      - LOG_LEVEL=INFO
+      - VECTOR_STORE_PATH=corpus/vector_store
+      - VECTOR_STORE_COLLECTION=mutual_fund_faq
+    restart: unless-stopped
