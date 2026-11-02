@@ -451,17 +451,18 @@
       background: #0E1524;
     }
 
-    /* Embedded Query Dock */
+    /* Embedded Query Dock (Super-Sized) */
     .query-dock-box {
       display: flex;
       align-items: center;
-      background: #06090F;
-      border: 1px solid rgba(0, 208, 156, 0.35);
-      box-shadow: 0 0 16px rgba(0, 208, 156, 0.10);
-      border-radius: 8px;
-      padding: 6px 12px;
-      gap: 10px;
-      margin-bottom: 12px;
+      background: #080D17;
+      border: 2px solid rgba(0, 208, 156, 0.45);
+      box-shadow: 0 4px 24px rgba(0, 208, 156, 0.15);
+      border-radius: 12px;
+      padding: 8px 18px;
+      gap: 14px;
+      margin-bottom: 14px;
+      height: 60px;
     }
 
     .dock-input {
@@ -471,31 +472,35 @@
       outline: none;
       color: #FFF;
       font-family: var(--font-main);
-      font-size: 0.85rem;
+      font-size: 1.12rem;
+      font-weight: 500;
     }
 
     .dock-input::placeholder {
-      color: #475569;
+      color: #64748B;
+      font-size: 1.0rem;
     }
 
     .dock-btn {
-      background: var(--accent-emerald);
-      color: #000;
-      font-weight: 700;
-      font-size: 0.82rem;
+      background: linear-gradient(135deg, #00D09C 0%, #059669 100%);
+      color: #04080E;
+      font-weight: 800;
+      font-size: 1.05rem;
       border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 12px 24px;
+      border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      box-shadow: 0 4px 16px rgba(0, 208, 156, 0.35);
     }
 
     .dock-btn:hover {
-      background: #00E5AC;
-      box-shadow: 0 0 12px rgba(0, 208, 156, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 208, 156, 0.55);
+      background: linear-gradient(135deg, #00F5B8 0%, #059669 100%);
     }
 
     /* Live Chat Thread inside Query Center */
@@ -797,18 +802,18 @@
     
     <!-- LEFT COLUMN (28%) -->
     <div class="left-col">
-      <!-- Card 1: Advisory Copilot Badge -->
+      <!-- Card 1: Scheme Directory Badge -->
       <div class="fp-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
           <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:1.1rem;">🤖</span>
-            <strong style="font-size:0.98rem; color:#FFF;">Advisory Copilot <span style="color:var(--accent-emerald); font-size:0.75rem;">v3.8</span></strong>
+            <span style="font-size:1.1rem;">📚</span>
+            <strong style="font-size:0.98rem; color:#FFF;">Scheme Directory</strong>
           </div>
-          <span class="badge-latency">14ms</span>
+          <span class="badge-latency">15 Schemes</span>
         </div>
-        <div style="font-size:0.75rem; color:var(--text-gray); margin-bottom:8px;">AMFI Facts &amp; Sim</div>
+        <div style="font-size:0.75rem; color:var(--text-gray); margin-bottom:8px;">AMFI Direct Plans &bull; Facts Verified</div>
         <div style="background:#080C14; border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:8px 10px; font-size:0.74rem; color:#CBD5E1; line-height:1.45;">
-          🛡️ <strong>SEBI Advisory:</strong> Real-time deterministic query mode. 5-10Y historical rolling CAGR.
+          🛡️ <strong>SEBI Compliant:</strong> Real-time deterministic query mode. Strictly non-promotional, source-attributed.
         </div>
       </div>
 
@@ -927,43 +932,30 @@
         </div>
       </div>
 
-      <!-- Row 2: Advisory Copilot Query Center Card -->
-      <div class="fp-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <div style="display:flex; align-items:center; gap:8px;">
+      <!-- Row 2: Search Center Card -->
+      <div class="fp-card" style="padding:22px 24px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <div style="display:flex; align-items:center; gap:10px;">
             <span class="pulse-dot"></span>
-            <strong style="font-size:0.95rem; color:#FFF;">Advisory Copilot Query Center</strong>
-            <span class="kpi-badge-green" style="font-size:0.65rem;">Deterministic AMFI RAG</span>
+            <strong style="font-size:1.08rem; color:#FFF; letter-spacing:0.2px;">Groww Mutual Fund Search & Query Hub</strong>
+            <span class="kpi-badge-green" style="font-size:0.68rem;">Deterministic AMFI RAG · Facts Only</span>
           </div>
-          <span style="font-size:0.75rem; color:var(--accent-emerald); font-family:var(--font-mono);">⚡ Auto-Synced <span id="autoSyncedYr">10</span>Y Trajectory</span>
+          <span style="font-size:0.75rem; color:var(--accent-emerald); font-family:var(--font-mono);">⚡ 15 Direct Schemes Indexed</span>
         </div>
 
-        <!-- Strategy Summary Box -->
-        <div class="strategy-summary-box">
-          <div style="display:flex; justify-content:space-between; margin-bottom:4px; flex-wrap:wrap; gap:6px;">
-            <strong style="color:var(--accent-emerald);">✨ Current Strategy: High-Yield SIP Portfolio (₹<span id="stratSip">25,000</span>/mo)</strong>
-            <span style="font-family:var(--font-mono); color:#FFF; font-weight:700;">Weighted CAGR: <span id="stratCagr">15.4</span>% p.a.</span>
-          </div>
-          <div>
-            Optimized for <span id="stratYears">10</span>-year capital compounding with balanced factor exposure: 
-            <strong>35% Nippon Small Cap</strong> (+28.4% 3Y), <strong>40% PPFAS Flexi Cap</strong> (14.8% indirect tech exposure), 
-            and <strong>25% HDFC Mid-Cap</strong>. Blended expense ratio: <strong>0.718%</strong> (saves ~1.1% vs regular plans).
-          </div>
+        <!-- Super-Sized High-Impact Query Dock -->
+        <div class="query-dock-box">
+          <span style="font-size:1.25rem; color:#00D09C;">🔍</span>
+          <input type="text" id="dockQueryInput" class="dock-input" placeholder="Ask anything about expense ratios, exit loads, fund managers, min SIP (e.g. 'What is the exit load of PPFAS Flexi Cap?')..." onkeydown="if(event.key==='Enter') submitDockQuery();">
+          <button class="dock-btn" onclick="submitDockQuery()">Query ➔</button>
         </div>
 
         <!-- 4 Quick Action Chips -->
         <div class="quick-chips-row">
-          <button class="chip-btn" onclick="applyPresetStepUp()">📈 15Y SIP with 10% Step-Up</button>
-          <button class="chip-btn" onclick="askCopilot('What is the benchmark index and performance of SBI Nifty Next 50 Index Fund?')">📊 Compare vs Nifty 50 TRI</button>
-          <button class="chip-btn" onclick="applyModerateRisk()">🛡️ Lower Risk to Moderate</button>
-          <button class="chip-btn" onclick="showFactsheetNotice()">📥 Download Factsheet PDF</button>
-        </div>
-
-        <!-- Embedded Query Dock -->
-        <div class="query-dock-box">
-          <span style="font-size:1.1rem; color:#64748B;">📎</span>
-          <input type="text" id="dockQueryInput" class="dock-input" placeholder="Ask anything (e.g. 'What is the exit load of PPFAS Flexi Cap?')..." onkeydown="if(event.key==='Enter') submitDockQuery();">
-          <button class="dock-btn" onclick="submitDockQuery()">Query ↑</button>
+          <button class="chip-btn" onclick="askCopilot('What is the expense ratio of Nippon India Growth Mid Cap Fund?')">⚡ Nippon Growth TER</button>
+          <button class="chip-btn" onclick="askCopilot('What is the exit load for Parag Parikh Flexi Cap Fund?')">⚡ PPFAS Flexi Exit Load</button>
+          <button class="chip-btn" onclick="askCopilot('Who is the fund manager of Quant Small Cap Fund?')">⚡ Quant Fund Manager</button>
+          <button class="chip-btn" onclick="askCopilot('What is the minimum SIP amount for HDFC Mid-Cap Opportunities Fund?')">⚡ HDFC Mid-Cap Min SIP</button>
         </div>
 
         <!-- Live Chat Thread -->

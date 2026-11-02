@@ -490,6 +490,57 @@ st.markdown(
         color: var(--accent-emerald) !important;
         background-color: #111724 !important;
     }
+
+    /* Super-Sized High-Impact Search Dock */
+    div[data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+    }
+    div[data-testid="stForm"] div[data-testid="stTextInput"] input {
+        height: 64px !important;
+        min-height: 64px !important;
+        font-size: 1.15rem !important;
+        font-weight: 500 !important;
+        padding: 16px 24px !important;
+        border-radius: 12px !important;
+        background: #080D17 !important;
+        border: 2px solid rgba(0, 208, 156, 0.45) !important;
+        box-shadow: 0 4px 24px rgba(0, 208, 156, 0.12), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+        color: #FFFFFF !important;
+        letter-spacing: 0.2px !important;
+        transition: all 0.25s ease !important;
+    }
+    div[data-testid="stForm"] div[data-testid="stTextInput"] input:focus {
+        border-color: #00D09C !important;
+        background: #0C1322 !important;
+        box-shadow: 0 0 30px rgba(0, 208, 156, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+    div[data-testid="stForm"] div[data-testid="stTextInput"] input::placeholder {
+        color: #64748B !important;
+        font-size: 1.05rem !important;
+        font-weight: 400 !important;
+    }
+    div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button {
+        height: 64px !important;
+        min-height: 64px !important;
+        font-size: 1.15rem !important;
+        font-weight: 800 !important;
+        border-radius: 12px !important;
+        background: linear-gradient(135deg, #00D09C 0%, #059669 100%) !important;
+        color: #04080E !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(0, 208, 156, 0.4) !important;
+        letter-spacing: 0.5px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+    div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 28px rgba(0, 208, 156, 0.6) !important;
+        background: linear-gradient(135deg, #00F5B8 0%, #059669 100%) !important;
+        color: #000000 !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -770,7 +821,7 @@ safe_html(
     <div class="copilot-subbar">
         <div class="copilot-subbar-chips">
             <span style="font-weight:700; color:#FFF; display:flex; align-items:center; gap:6px;">
-                <span class="pulse-dot-green"></span> FUNDPULSE COPILOT ENGINE
+                <span class="pulse-dot-green"></span> FUNDPULSE RAG INTELLIGENCE ENGINE
             </span>
             <span class="engine-chip">⚡ Deterministic Qwen 2.5 / Llama 3 · Groq LPU (14ms latency)</span>
             <span class="engine-chip">📊 Indexed AMFI Portfolios: 15 Schemes (135 Chunks) · Precision RAG</span>
@@ -821,7 +872,7 @@ if st.session_state.pending_query:
 
 # ── Navigation Tabs ────────────────────────────────────────────────────────────
 nav_tabs = st.tabs([
-    "Copilot & Studio",
+    "Search & Studio",
     "Portfolio Simulator",
     "Fund Explorer",
     "Benchmark Analyzer",
@@ -829,31 +880,30 @@ nav_tabs = st.tabs([
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 1: Copilot & Studio (Exact Stitch Screen dc22be5adf064469b93b8f1db11496ec)
+# TAB 1: Search & Studio (FundPulse RAG Search Center)
 # ═══════════════════════════════════════════════════════════════════════════════
 with nav_tabs[0]:
     # 2-Column Responsive Layout
     col_left, col_right = st.columns([1, 2.75], gap="medium")
 
     # ─────────────────────────────────────────────────────────────────────────
-    # LEFT COLUMN: Advisory Copilot Card, Active Schemes, Presets
+    # LEFT COLUMN: Scheme Directory, Active Schemes, Presets
     # ─────────────────────────────────────────────────────────────────────────
     with col_left:
-        # Card 1: Advisory Copilot Badge
+        # Card 1: Scheme Directory Badge
         safe_html(
             """
             <div class="fp-card fp-card-highlight">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size:1.1rem;">🤖</span>
-                        <strong style="font-size:1.0rem; color:#FFF;">Advisory Copilot</strong>
-                        <span style="font-size:0.68rem; color:#00D09C; font-weight:700;">v3.8</span>
+                        <span style="font-size:1.1rem;">📚</span>
+                        <strong style="font-size:1.0rem; color:#FFF;">Scheme Directory</strong>
                     </div>
-                    <span class="kpi-badge-green" style="font-family:var(--font-mono);">14ms</span>
+                    <span class="kpi-badge-green" style="font-family:var(--font-mono);">15 Schemes</span>
                 </div>
-                <div style="font-size:0.76rem; color:#94A3B8; margin-bottom:8px;">AMFI Facts & Sim Engine</div>
+                <div style="font-size:0.76rem; color:#94A3B8; margin-bottom:8px;">AMFI Direct Plans &bull; Facts Verified</div>
                 <div style="background:#080C14; border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:10px; font-size:0.75rem; color:#CBD5E1; line-height:1.5;">
-                    🛡️ <strong>SEBI Advisory:</strong> Real-time deterministic query mode. 5-10Y historical rolling CAGR. Strictly non-promotional, source-attributed.
+                    🛡️ <strong>SEBI Compliant:</strong> Real-time deterministic query mode. Strictly non-promotional, source-attributed.
                 </div>
             </div>
             """
@@ -1029,67 +1079,56 @@ with nav_tabs[0]:
         </div>
         """)
 
-        # Row 2: Advisory Copilot Query Center Card
+        # Row 2: Search Center Card (Advisory Copilot replaced with Prominent, Super-Sized Search Hub)
         safe_html(
             f"""
-            <div class="fp-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
+            <div class="fp-card fp-card-search" style="padding:22px 24px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
                         <span class="pulse-dot-green"></span>
-                        <strong style="font-size:0.95rem; color:#FFF;">Advisory Copilot Query Center</strong>
-                        <span class="kpi-badge-green" style="font-size:0.65rem;">Deterministic AMFI RAG</span>
+                        <strong style="font-size:1.08rem; color:#FFF; letter-spacing:0.2px;">Groww Mutual Fund Search & Query Hub</strong>
+                        <span class="kpi-badge-green" style="font-size:0.68rem;">Deterministic AMFI RAG · Facts Only</span>
                     </div>
-                    <span style="font-size:0.75rem; color:#00D09C; font-family:var(--font-mono);">⚡ Auto-Synced {st.session_state.horizon_years}Y Trajectory</span>
-                </div>
-                <div class="strategy-summary-box">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <strong style="color:#00D09C;">✨ Current Strategy: High-Yield SIP Portfolio (₹{st.session_state.monthly_sip:,.0f}/mo)</strong>
-                        <span style="font-family:var(--font-mono); color:#FFF; font-weight:700;">Weighted CAGR: {st.session_state.cagr_rate:.1f}% p.a.</span>
-                    </div>
-                    <div>
-                        Optimized for {st.session_state.horizon_years}-year capital compounding with balanced factor exposure: 
-                        <strong>35% Nippon Small Cap</strong> (+28.4% 3Y), <strong>40% PPFAS Flexi Cap</strong> (14.8% indirect tech exposure), 
-                        and <strong>25% HDFC Mid-Cap</strong>. Blended expense ratio: <strong>0.718%</strong> (saves ~1.1% vs regular plans).
-                    </div>
+                    <span style="font-size:0.75rem; color:#94A3B8; font-family:var(--font-mono);">⚡ 15 Direct Schemes Indexed</span>
                 </div>
             """
         )
 
-        # 1-Click Quick Action Chips
-        q_col1, q_col2, q_col3, q_col4 = st.columns(4)
-        with q_col1:
-            if st.button("📈 15Y SIP with 10% Step-Up", use_container_width=True):
-                st.session_state.horizon_years = 15
-                st.session_state.step_up = True
-                st.rerun()
-        with q_col2:
-            if st.button("📊 Compare vs Nifty 50 TRI", use_container_width=True):
-                st.session_state.pending_query = "What is the benchmark index and performance of SBI Nifty Next 50 Index Fund?"
-        with q_col3:
-            if st.button("🛡️ Lower Risk to Moderate", use_container_width=True):
-                st.session_state.cagr_rate = 13.5
-                st.session_state.risk_profile = "Balanced"
-                st.rerun()
-        with q_col4:
-            if st.button("📥 Download Factsheet PDF", use_container_width=True):
-                st.toast("Official factsheets can be inspected in the Fund Explorer tab!")
-
-        # In-Card Query Dock (Matching Stitch Screen dc22be5adf064469b93b8f1db11496ec)
+        # Super-Sized High-Impact Query Dock
         with st.form("copilot_dock_form", clear_on_submit=True):
-            q_dock_col, btn_dock_col = st.columns([5.5, 1.2])
+            q_dock_col, btn_dock_col = st.columns([5.2, 1.3])
             with q_dock_col:
                 dock_q = st.text_input(
-                    "Ask anything",
-                    placeholder="Ask anything (e.g. 'What is the exit load of PPFAS Flexi Cap?')...",
+                    "Search mutual fund database",
+                    placeholder="Ask anything about expense ratios, exit loads, fund managers, min SIP (e.g. 'What is the exit load of PPFAS Flexi Cap?')...",
                     label_visibility="collapsed",
                     key="dock_query_input",
                 )
             with btn_dock_col:
-                dock_submitted = st.form_submit_button("Query ↑", use_container_width=True)
+                dock_submitted = st.form_submit_button("Query ➔", use_container_width=True)
 
         if dock_submitted and dock_q.strip():
             handle_query(dock_q.strip())
             st.rerun()
+
+        # Quick Factual Query Chips
+        chip_col1, chip_col2, chip_col3, chip_col4 = st.columns(4)
+        with chip_col1:
+            if st.button("⚡ Nippon Growth TER", use_container_width=True):
+                st.session_state.pending_query = "What is the expense ratio of Nippon India Growth Mid Cap Fund?"
+                st.rerun()
+        with chip_col2:
+            if st.button("⚡ PPFAS Flexi Exit Load", use_container_width=True):
+                st.session_state.pending_query = "What is the exit load for Parag Parikh Flexi Cap Fund?"
+                st.rerun()
+        with chip_col3:
+            if st.button("⚡ Quant Fund Manager", use_container_width=True):
+                st.session_state.pending_query = "Who is the fund manager of Quant Small Cap Fund?"
+                st.rerun()
+        with chip_col4:
+            if st.button("⚡ HDFC Mid-Cap Min SIP", use_container_width=True):
+                st.session_state.pending_query = "What is the minimum SIP amount for HDFC Mid-Cap Opportunities Fund?"
+                st.rerun()
 
         # Conversational Chat Thread (renders messages if any)
         if st.session_state.messages:
