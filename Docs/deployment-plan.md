@@ -132,7 +132,7 @@ Render allows running the FastAPI backend with the embedded Stitch Web UI free o
 ### Phase 2: Live Streamlit Deployment on Streamlit Community Cloud
 
 The presentation-grade 4-tab Streamlit fintech application is deployed and live at:
-**[`https://mutualfund-nextleap.streamlit.app`](https://mutualfund-nextleap.streamlit.app)**
+**[`https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/`](https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/)**
 
 1. **Streamlit Community Cloud Setup:**
    - Go to [share.streamlit.io](https://share.streamlit.io) and log in with GitHub.

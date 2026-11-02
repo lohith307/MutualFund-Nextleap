@@ -700,6 +700,7 @@ flowchart TD
 | **M6** — Advanced UI | Stitch-grade Groww chat UI + standalone web app | Day 21–22 | ✅ Shipped |
 | **M7** — Automation | Daily 10:00 AM IST ingestion scheduler + API endpoints | Day 23–24 | ✅ Shipped |
 | **M8** — Cloud & 4-Tab UI | Streamlit Cloud deployment + 4-tab presentation UI + verified TERs | Day 25–26 | ✅ Shipped |
+| **M9** — Studio UX & RAG Focus | Streamlined Search & Studio UI, super-sized search dock, single-threaded ONNX optimization, and removal of speculative advisory widgets | Day 27 | ✅ Shipped |
 
 ---
 

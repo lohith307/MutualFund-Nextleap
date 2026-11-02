@@ -22,8 +22,8 @@ license: mit
 [![Groq](https://img.shields.io/badge/Groq-qwen--2.5--27b-f55036.svg)](https://groq.com/)
 [![Scheduler](https://img.shields.io/badge/Scheduler-10%3A00%20AM%20IST-00D09C.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-149%20Passed-brightgreen.svg)]()
-[![Live Demo](https://img.shields.io/badge/Live%20App-Streamlit%20Cloud-00D09C.svg)](https://mutualfund-nextleap.streamlit.app)
-[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mutualfund-nextleap.streamlit.app)
+[![Live Demo](https://img.shields.io/badge/Live%20App-Streamlit%20Cloud-00D09C.svg)](https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/)
+[![Deploy to Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lohith307/MutualFund-Nextleap)
 
 ---
@@ -116,11 +116,11 @@ The knowledge base covers 15 curated scheme pages across 11 Asset Management Com
 | Component | Technology | Rationale |
 |---|---|---|
 | **LLM Provider** | **Groq Cloud** (`qwen/qwen3.8-27b`) | Sub-500ms deterministic inference (temp=0.0) with automatic multi-model fallback (`llama-3.1-8b`, `llama-3.3-70b`). |
-| **Embeddings** | **BAAI/bge-small-en-v1.5** via `fastembed` | 100% free, runs locally on CPU via ONNX runtime, 384 dimensions, MTEB leader. |
+| **Embeddings** | **BAAI/bge-small-en-v1.5** via `fastembed` | 100% free, CPU-optimized single-threaded ONNX execution with GC fallback preventing memory allocation spikes. |
 | **Vector Database** | **ChromaDB 0.5.18** (Persistent, Local) | Fast metadata filtering with HNSWlib bounds protection preventing array errors. |
 | **Chunking Engine** | **Section-Aware Chunker** | 135 atomic chunks enriched with verified Total Expense Ratios (TER) across 9 factual sections. |
 | **API Backend** | **FastAPI** + **SlowAPI** | High-throughput async REST API with IP rate limiting and schema validation. |
-| **User Interface** | **Streamlit 1.40+** (Groww Fintech Theme) | 4 interactive tabs, top KPI metric grid, and interactive sidebar scheme explorer with instant factsheets & 1-click action chips. |
+| **User Interface** | **Streamlit 1.40+** (Groww Studio Theme) | 4 tabs (Search & Studio, Portfolio Simulator, Fund Explorer, Benchmark Analyzer), live market tickers, super-sized search dock, and glowing compounding curve. |
 
 *For complete details, see [`Docs/architecture.md`](Docs/architecture.md) and [`Docs/edge-cases.md`](Docs/edge-cases.md).*
 
@@ -231,11 +231,16 @@ curl -X POST "http://localhost:8000/query" \
 .\venv\Scripts\streamlit run src/ui/app.py
 ```
 Opens in your browser at `http://localhost:8501`. Features include:
-- **Interactive Sidebar Scheme Navigator:** Search and select any mutual fund from the dropdown to reveal an instant factsheet card (TER, Exit Load, Manager, Min SIP) and 4 one-click query buttons (`⚡ TER`, `🚪 Exit Load`, `👤 Manager`, `💰 Min SIP`).
-- **Tab 1: 💬 AI Chat Assistant:** Top KPI metric cards, category filter chips (Small Cap, Mid Cap, Flexi Cap, Large Cap, Debt), dynamic 1-click prompt cards, and conversational message thread with verified citation pills (`↗`).
-- **Tab 2: 🏢 Scheme Directory & Factsheets:** Searchable 15-fund factsheet grid with stats table and 3 direct query buttons per card.
-- **Tab 3: ⏰ Daily Ingestion Scheduler:** Real-time scheduler countdown (10:00 AM IST daily), pipeline flow diagram, and 1-click manual sync execution button.
-- **Tab 4: ⚖️ Regulatory Compliance:** SEBI/AMFI compliance guardrail breakdown and educational investor links.
+- **Live Market Ticker Bar:** Real-time indices status across NIFTY 50, SENSEX, NASDAQ, and US 10Y.
+- **Tab 1: ⚡ Search & Studio:**
+  - Left column: Scheme Directory with direct scheme cards and 1-click quick inquiry triggers.
+  - Right column: 4 Top KPI metric cards (Monthly SIP, Total Invested, Est. Wealth Gain, Projected Corpus).
+  - **Groww Mutual Fund Search & Query Hub:** Prominent, super-sized 52px search input bar with vertically centered text and glowing primary Query button.
+  - Instant factual chips (`⚡ Nippon Growth TER`, `⚡ PPFAS Flexi Exit Load`, `⚡ Quant Fund Manager`, `⚡ HDFC Mid-Cap Min SIP`).
+  - Neon compounding wealth trajectory visualization with 3Y to 20Y horizon selectors.
+- **Tab 2: 🧮 Portfolio Simulator:** Dedicated multi-asset SIP capital projection simulator with interactive CAGR sliders, horizon timelines, and step-up escalation toggles.
+- **Tab 3: 🔍 Fund Explorer:** Searchable 15-fund factsheet grid with stats table and direct query buttons per card.
+- **Tab 4: 📊 Benchmark Analyzer:** Regulatory facts, SEBI/AMFI compliance guardrail breakdown, and educational investor links.
 
 ---
 
@@ -264,7 +269,7 @@ FastAPI scheduler REST endpoints:
 The application is deployed live with zero cold-start delay:
 
 1. **Live Streamlit Community Cloud Dashboard:**
-   - **Production URL:** **[`https://mutualfund-nextleap.streamlit.app`](https://mutualfund-nextleap.streamlit.app)**
+   - **Production URL:** **[`https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/`](https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/)**
    - Pre-indexed ChromaDB vector store with self-healing cold-start loading.
 2. **FastAPI + Standalone Web UI on Render:**
    - Deployable via `render.yaml` or Docker Compose.

@@ -46,7 +46,7 @@ Click **Deploy Web Service**. Render will build and deploy your app, giving you 
 
 The dedicated 4-tab Streamlit fintech interface is deployed live on Streamlit Community Cloud:
 
-- **Live URL:** **[`https://mutualfund-nextleap.streamlit.app`](https://mutualfund-nextleap.streamlit.app)**
+- **Live URL:** **[`https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/`](https://mutualfund-nextleap-ff2ygj2gctssxwjsucxn3k.streamlit.app/)**
 - **GitHub Repository:** `lohith307/MutualFund-Nextleap`
 - **Branch:** `master`
 - **Main Entrypoint:** `streamlit_app.py` (or `src/ui/app.py`)

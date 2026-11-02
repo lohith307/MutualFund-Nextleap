@@ -148,18 +148,17 @@ flowchart TD
         Banner["⚠️ Strict Regulatory Notice: Facts-only assistant. No investment advice."]
     end
 
-    subgraph SidebarNav["Sidebar Scheme Navigator"]
-        SearchSelect["🔍 Search & Select from 15 Schemes"]
-        FactCard["Instant Scheme Factsheet Card\n(TER · Exit Load · Manager · Groww Link)"]
-        OneClickBtns["⚡ 4 Instant Inquiries: [TER] [Exit Load] [Manager] [Min SIP]"]
-        QuickSelect["Quick Select: Nippon Mid Cap · Parag Parikh · HDFC Mid Cap"]
+    subgraph SidebarNav["Left Column: Scheme Directory & Direct Inquiry"]
+        SearchSelect["📚 Scheme Directory: 15 Schemes Indexed"]
+        FactCard["Direct Schemes List (Nippon Small Cap · PPFAS Flexi Cap · HDFC Mid Cap)"]
+        OneClickBtns["⚡ 1-Click Inquiries: [Nippon TER] [PPFAS Exit Load] [Quant Mgr] [HDFC Min SIP]"]
     end
 
     subgraph Tabs["Four Dedicated Navigation Tabs"]
-        T1["💬 Tab 1: AI Chat Assistant\n• Top KPI Metric Cards (15 Schemes, 135 Chunks, 10:00 AM Sync, 0% Advice)\n• Category Filter Chips (All, Small Cap, Mid Cap, Flexi Cap, Large Cap, Debt)\n• Dynamic 1-Click Prompt Cards\n• Conversational Feed with Emerald Cards, Source Pills, and Date Badges"]
-        T2["🏢 Tab 2: Scheme Directory & Factsheets\n• Real-time Search by Name, AMC, Category, or Manager\n• 15 Rich Factsheet Cards with TER, Exit Load, Manager & Min SIP\n• 3 Direct Inquiry Action Buttons per Card"]
-        T3["⏰ Tab 3: Daily Ingestion Scheduler\n• Live Telemetry (10:00 AM IST Cron, Last Status, Duration, Vectors)\n• Pipeline Flow Diagram (Fetch → Parse → Chunk → Embed → Upsert)\n• 'Trigger Ingestion Pipeline Now' Manual Execution Button"]
-        T4["⚖️ Tab 4: Regulatory Compliance\n• SEBI Non-Advisory Guardrail Checklist\n• PII Scrubbing & Source Attribution Contract Rules\n• Educational Links to AMFI & SEBI"]
+        T1["⚡ Tab 1: Search & Studio\n• Live Market Ticker (NIFTY 50, SENSEX, NASDAQ, US 10Y)\n• Top KPI Metric Cards (Monthly SIP, Total Invested, Est. Gain, Projected Corpus)\n• Groww Mutual Fund Search & Query Hub (Clean 52px Bar, Centered Input, 1-Click Chips)\n• Compounded Wealth Trajectory Neon Curve (Formula: XIRR @ 15.4%)\n• Verified RAG Answer Cards with Groww Citations & Timestamp Footers"]
+        T2["🧮 Tab 2: Advanced Portfolio Simulator\n• Multi-Asset SIP Projections & Compound Interest Modeling\n• Horizon Timeline Selectors (1Y to 30Y) & Annual SIP Step-Up (+10%) Escalate"]
+        T3["🔍 Tab 3: Fund Explorer\n• Searchable 15-Fund Metadata Factsheets & Statistics\n• Instant One-Click Inspection Action Buttons per Scheme"]
+        T4["📊 Tab 4: Benchmark Analyzer & Compliance\n• SEBI Non-Advisory Guardrail Compliance Breakdown\n• Official Investor Educational Links (AMFI India & SEBI)"]
     end
 
     StickyHeader --> Tabs
@@ -168,14 +167,14 @@ flowchart TD
 
 | Element | Description |
 |---|---|
-| **Sticky Telemetry Header** | Real-time pulsating status indicator, live sync status, and persistent regulatory disclaimer |
-| **Top KPI Metric Cards** | 4-card overview grid: 15 Schemes, 135 Chunks, 10:00 AM IST Daily Sync, 0% Advice Tolerance |
-| **Sidebar Scheme Explorer** | Searchable scheme selector with live factsheet rendering and 4 instant 1-click inquiry chips |
-| **Category Filter Chips** | Interactive pills filtering sample prompts across Small Cap, Mid Cap, Flexi Cap, Large Cap, Index & Debt |
-| **Conversational Chat Thread** | Emerald-bordered answer cards, refusal/advisory alert cards, verified source link pills (`↗`), and crawl timestamps |
-| **Scheme Directory Tab** | Searchable multi-column grid of all 15 covered mutual funds with full metadata factsheets and action buttons |
-| **Ingestion Scheduler Tab** | Real-time countdown to next 10:00 AM IST run, pipeline architecture diagram, and manual trigger button |
-| **Regulatory Compliance Tab** | SEBI & AMFI non-advisory compliance breakdown and educational investor links |
+| **Live Market Ticker Bar** | Real-time global market indices: NIFTY 50, SENSEX, NASDAQ, and US 10Y with live feed status |
+| **Top KPI Metric Cards** | 4-card overview grid: Monthly SIP, Total Invested, Est. Wealth Gain, and Projected Corpus |
+| **Groww Search & Query Hub** | Super-sized 52px input dock, vertically centered placeholder, single emerald border, and 1-click factual chips |
+| **Scheme Directory** | 15 curated direct growth schemes with verified expense ratios, exit loads, and fund managers |
+| **Compounded Wealth Trajectory** | Interactive glowing SVG compounding curve with 3Y to 20Y horizon presets |
+| **Portfolio Simulator Tab** | Dedicated wealth simulator modeling SIP step-ups, capital accumulation, and target CAGR adjustments |
+| **Fund Explorer Tab** | Searchable multi-column catalog of all 15 indexed funds with verified stats and query triggers |
+| **Benchmark Analyzer Tab** | Regulatory compliance sign-off, non-advisory verification rules, and investor education resources |
 
 ---
 
