@@ -33,5 +33,10 @@ Answer (max 3 sentences, include one source link):"""
 
 def build_prompt(context: str, question: str) -> str:
     """Format the user prompt with retrieved context and user question."""
+    q_lower = question.lower()
+    # Handle known historical scheme renames (e.g. Parag Parikh Long Term Value -> Flexi Cap)
+    if "parag parikh" in q_lower and "long term" in q_lower:
+        context = "(Note: Parag Parikh Flexi Cap Fund Direct Growth was formerly known as Parag Parikh Long Term Value Fund.)\n\n" + context
+
     return USER_PROMPT_TEMPLATE.format(context=context, question=question)
 

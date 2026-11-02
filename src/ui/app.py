@@ -322,9 +322,9 @@ for i, cat in enumerate(categories):
 # ── Dynamic Quick Prompt Cards based on Category ──────────────────────────────
 category_prompts = {
     "All": [
-        "What is the expense ratio of Nippon India Growth Mid Cap Fund?",
-        "What is the exit load for Parag Parikh Long Term Value Fund?",
-        "Who is the fund manager of Quant Small Cap Fund?",
+        "What is the exit load for Parag Parikh Flexi Cap Fund?",
+        "What is the exit load for HDFC Mid Cap Fund?",
+        "Who is the fund manager of Nippon India Growth Mid Cap Fund?",
     ],
     "Small Cap": [
         "What is the minimum SIP for Bandhan Small Cap Fund?",
