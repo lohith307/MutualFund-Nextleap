@@ -170,3 +170,4 @@ class TestSchedulerApiEndpoints:
             data = response.json()
             assert data["status"] == "triggered"
             assert "background" in data["message"].lower()
+
