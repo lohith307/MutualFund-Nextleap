@@ -21,3 +21,4 @@ services:
         value: corpus/vector_store
       - key: VECTOR_STORE_COLLECTION
         value: mutual_fund_faq
+

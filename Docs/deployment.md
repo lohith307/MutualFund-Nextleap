@@ -83,3 +83,4 @@ echo "GROQ_API_KEY=gsk_your_key_here" > .env
 docker compose up -d --build
 ```
 Your service will be live at `http://<your-server-ip>:8000`.
+

@@ -36,3 +36,4 @@ jobs:
             echo "⚠️ Health check returned HTTP status: ${HTTP_CODE}"
             exit 1
           fi
+
