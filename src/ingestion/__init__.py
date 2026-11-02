@@ -6,18 +6,23 @@ Modules:
     parse   — Strip boilerplate; extract and tag scheme sections
     chunker — Split cleaned text into overlapping chunks for embedding
     embedder— Embed chunks and upsert into ChromaDB vector store
-
-Typical run order:
-    python -m src.ingestion.fetch
-    python -m src.ingestion.parse
-    python -m src.ingestion.chunker
-    python -m src.ingestion.embedder
 """
-
-from src.ingestion.fetch import fetch_all
-from src.ingestion.parse import parse_all
-from src.ingestion.chunker import chunk_all
-from src.ingestion.embedder import embed_all
 
 __all__ = ["fetch_all", "parse_all", "chunk_all", "embed_all"]
 
+
+def __getattr__(name: str):
+    """Lazy-load ingestion pipeline functions on demand (PEP 562)."""
+    if name == "fetch_all":
+        from src.ingestion.fetch import fetch_all
+        return fetch_all
+    if name == "parse_all":
+        from src.ingestion.parse import parse_all
+        return parse_all
+    if name == "chunk_all":
+        from src.ingestion.chunker import chunk_all
+        return chunk_all
+    if name == "embed_all":
+        from src.ingestion.embedder import embed_all
+        return embed_all
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

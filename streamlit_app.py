@@ -17,3 +17,4 @@ if str(ROOT_DIR) not in sys.path:
 
 # Launch main application
 from src.ui.app import *  # noqa: F401, F403
+
