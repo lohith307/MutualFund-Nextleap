@@ -1432,10 +1432,6 @@ with nav_tabs[3]:
     st.markdown("- [SEBI Investor Website](https://investor.sebi.gov.in/)")
 
 
-# ── Floating Bottom Query Input Dock ───────────────────────────────────────────
-if prompt := st.chat_input("Ask anything (e.g. 'What is the exit load of PPFAS Flexi Cap?')..."):
-    handle_query(prompt)
-    st.rerun()
 
 
 # ── Footer Disclaimers ─────────────────────────────────────────────────────────

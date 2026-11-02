@@ -75,7 +75,7 @@ class BGEFastEmbeddingFunction:
         from fastembed import TextEmbedding
         logger.info("Initializing BGE embedding model: %s", model_name)
         self.model_name = model_name
-        self._model = TextEmbedding(model_name=model_name)
+        self._model = TextEmbedding(model_name=model_name, threads=1)
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """Embed document chunks (no query prefix)."""
@@ -88,8 +88,16 @@ class BGEFastEmbeddingFunction:
         """Embed user search query with BGE prompt instruction prefix."""
         prefix = "Represent this sentence for searching relevant passages: "
         formatted_query = f"{prefix}{query}" if "bge" in self.model_name.lower() else query
-        embedding = list(self._model.embed([formatted_query]))[0]
-        return embedding.tolist()
+        safe_query = formatted_query[:1000]
+        try:
+            embedding = list(self._model.embed([safe_query], batch_size=1))[0]
+            return embedding.tolist()
+        except Exception as exc:
+            logger.warning("First embed attempt failed (%s), retrying after gc...", exc)
+            import gc
+            gc.collect()
+            embedding = list(self._model.embed([safe_query], batch_size=1))[0]
+            return embedding.tolist()
 
 
 def get_embedding_function():
