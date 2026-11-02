@@ -79,7 +79,9 @@ class BGEFastEmbeddingFunction:
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """Embed document chunks (no query prefix)."""
-        embeddings = list(self._model.embed(texts))
+        # Truncate texts to 1200 characters max to avoid memory blowup on ONNX attention nodes
+        safe_texts = [t[:1200] for t in texts]
+        embeddings = list(self._model.embed(safe_texts, batch_size=16))
         return [e.tolist() for e in embeddings]
 
     def embed_query(self, query: str) -> List[float]:
@@ -158,7 +160,7 @@ def embed_and_upsert_chunks(
     chunks: List[dict],
     collection: Optional[Any] = None,
     embedding_fn: Optional[Any] = None,
-    batch_size: int = 64,
+    batch_size: int = 16,
 ) -> int:
     """
     Generate embeddings for chunks and upsert them into ChromaDB.
